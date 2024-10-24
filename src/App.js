@@ -94,7 +94,7 @@ function AppContent() {
     if (token) {
       try {
         const response = await axios.get(
-          "https://go-server-vbrc.onrender.com/api/cart",
+          "https://go-server-9p6w.onrender.com/api/cart",
           {
             headers: { Authorization: `Bearer ${token}` },
           }

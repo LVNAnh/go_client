@@ -219,7 +219,10 @@ function AppContent() {
                 path="/add-product-category"
                 element={<AddProductCategory />}
               />
-              <Route path="/add-product" element={<AddProduct />} />
+              <Route
+                path="https://cleeny.onrender.com/add-product"
+                element={<AddProduct />}
+              />
               <Route
                 path="/add-service-category"
                 element={<AddServiceCategory />}

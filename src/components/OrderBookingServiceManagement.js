@@ -39,7 +39,7 @@ function OrderBookingServiceManagement() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://go-server-9p6w.onrender.com/api/orderbookingservices",
+        "https://go-server-9p6w.onrender.com/api/orderbookingservices/all",
         {
           headers: { Authorization: `Bearer ${token}` },
         }

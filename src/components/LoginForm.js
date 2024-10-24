@@ -12,7 +12,7 @@ function LoginForm({ setUser, updateCartCount }) {
 
     try {
       const response = await fetch(
-        "https://go-server-vbrc.onrender.com/api/login",
+        "https://go-server-9p6w.onrender.com/api/login",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

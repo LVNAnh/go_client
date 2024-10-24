@@ -46,7 +46,7 @@ function ServiceBooking() {
     const fetchServices = async () => {
       try {
         const response = await axios.get(
-          "https://go-server-vbrc.onrender.com/api/services"
+          "https://go-server-9p6w.onrender.com/api/services"
         );
         setServices(response.data);
       } catch (error) {
@@ -107,7 +107,7 @@ function ServiceBooking() {
       };
 
       const response = await axios.post(
-        "https://go-server-vbrc.onrender.com/api/orderbookingservice",
+        "https://go-server-9p6w.onrender.com/api/orderbookingservice",
         bookingData,
         {
           headers: {

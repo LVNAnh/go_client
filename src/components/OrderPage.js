@@ -26,7 +26,7 @@ function OrderPage() {
     const fetchSelectedItems = async () => {
       try {
         const response = await axios.get(
-          "https://go-server-vbrc.onrender.com/api/selecteditems",
+          "https://go-server-9p6w.onrender.com/api/selecteditems",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -70,7 +70,7 @@ function OrderPage() {
   const handlePlaceOrder = async () => {
     try {
       const selectedItemsResponse = await axios.get(
-        "https://go-server-vbrc.onrender.com/api/selecteditems",
+        "https://go-server-9p6w.onrender.com/api/selecteditems",
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
@@ -88,7 +88,7 @@ function OrderPage() {
       }
 
       const orderResponse = await axios.post(
-        "https://go-server-vbrc.onrender.com/api/order",
+        "https://go-server-9p6w.onrender.com/api/order",
         { items: selectedProducts },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -103,7 +103,7 @@ function OrderPage() {
         });
 
         await axios.delete(
-          "https://go-server-vbrc.onrender.com/api/selecteditems/clear",
+          "https://go-server-9p6w.onrender.com/api/selecteditems/clear",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,

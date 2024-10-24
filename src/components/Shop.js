@@ -29,7 +29,7 @@ function Shop({ updateCartCount }) {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          "https://go-server-vbrc.onrender.com/api/products"
+          "https://go-server-9p6w.onrender.com/api/products"
         );
         setProducts(response.data);
       } catch (error) {
@@ -50,7 +50,7 @@ function Shop({ updateCartCount }) {
     try {
       const cartItem = { product_id: product.id, quantity: 1 };
       const response = await axios.post(
-        "https://go-server-vbrc.onrender.com/api/cart/add",
+        "https://go-server-9p6w.onrender.com/api/cart/add",
         cartItem,
         {
           headers: {

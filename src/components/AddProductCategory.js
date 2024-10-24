@@ -36,7 +36,7 @@ function AddProductCategory() {
   const fetchProductCategories = async () => {
     try {
       const response = await axios.get(
-        "https://go-server-vbrc.onrender.com/api/productcategories",
+        "https://go-server-9p6w.onrender.com/api/productcategories",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -60,7 +60,7 @@ function AddProductCategory() {
   const handleAddCategory = async () => {
     try {
       await axios.post(
-        "https://go-server-vbrc.onrender.com/api/productcategory",
+        "https://go-server-9p6w.onrender.com/api/productcategory",
         formData,
         {
           headers: {
@@ -87,7 +87,7 @@ function AddProductCategory() {
   const handleUpdateCategory = async () => {
     try {
       await axios.put(
-        `https://go-server-vbrc.onrender.com/api/productcategory/${editCategoryId}`,
+        `https://go-server-9p6w.onrender.com/api/productcategory/${editCategoryId}`,
         formData,
         {
           headers: {
@@ -133,7 +133,7 @@ function AddProductCategory() {
     ) {
       try {
         await axios.delete(
-          `https://go-server-vbrc.onrender.com/api/productcategory/${categoryId}`,
+          `https://go-server-9p6w.onrender.com/api/productcategory/${categoryId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

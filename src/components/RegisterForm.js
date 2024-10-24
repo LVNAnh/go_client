@@ -16,7 +16,7 @@ function RegisterForm() {
 
     try {
       const response = await fetch(
-        "https://go-server-vbrc.onrender.com/api/register",
+        "https://go-server-9p6w.onrender.com/api/register",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

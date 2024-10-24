@@ -57,7 +57,7 @@ function AddService() {
   const fetchServices = async () => {
     try {
       const response = await axios.get(
-        "https://go-server-vbrc.onrender.com/api/services",
+        "https://go-server-9p6w.onrender.com/api/services",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -74,7 +74,7 @@ function AddService() {
   const fetchServiceCategories = async () => {
     try {
       const response = await axios.get(
-        "https://go-server-vbrc.onrender.com/api/servicecategories",
+        "https://go-server-9p6w.onrender.com/api/servicecategories",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -152,7 +152,7 @@ function AddService() {
 
     try {
       await axios.post(
-        "https://go-server-vbrc.onrender.com/api/service",
+        "https://go-server-9p6w.onrender.com/api/service",
         formDataToSend,
         {
           headers: {
@@ -193,7 +193,7 @@ function AddService() {
 
     try {
       await axios.put(
-        `https://go-server-vbrc.onrender.com/api/service/${editServiceId}`,
+        `https://go-server-9p6w.onrender.com/api/service/${editServiceId}`,
         formDataToSend,
         {
           headers: {
@@ -226,7 +226,7 @@ function AddService() {
   const confirmDelete = async () => {
     try {
       await axios.delete(
-        `https://go-server-vbrc.onrender.com/api/service/${deleteServiceId}`,
+        `https://go-server-9p6w.onrender.com/api/service/${deleteServiceId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

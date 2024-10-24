@@ -32,7 +32,7 @@ function Cart({ updateCartCount, setCartCount }) {
   const fetchCartItems = useCallback(async () => {
     try {
       const response = await axios.get(
-        "https://go-server-vbrc.onrender.com/api/cart",
+        "https://go-server-9p6w.onrender.com/api/cart",
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
@@ -41,7 +41,7 @@ function Cart({ updateCartCount, setCartCount }) {
       updateCartCount();
 
       const selectedResponse = await axios.get(
-        "https://go-server-vbrc.onrender.com/api/selecteditems",
+        "https://go-server-9p6w.onrender.com/api/selecteditems",
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
@@ -77,7 +77,7 @@ function Cart({ updateCartCount, setCartCount }) {
   const handleRemoveItem = async () => {
     try {
       const response = await axios.delete(
-        "https://go-server-vbrc.onrender.com/api/cart/remove",
+        "https://go-server-9p6w.onrender.com/api/cart/remove",
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -120,7 +120,7 @@ function Cart({ updateCartCount, setCartCount }) {
     }
     try {
       const response = await axios.post(
-        "https://go-server-vbrc.onrender.com/api/cart/update",
+        "https://go-server-9p6w.onrender.com/api/cart/update",
         { product_id: productId, quantity },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -138,7 +138,7 @@ function Cart({ updateCartCount, setCartCount }) {
 
         if (selectedItems.includes(productId)) {
           await axios.post(
-            "https://go-server-vbrc.onrender.com/api/selecteditems/update",
+            "https://go-server-9p6w.onrender.com/api/selecteditems/update",
             { product_id: productId, quantity },
             {
               headers: {
@@ -162,7 +162,7 @@ function Cart({ updateCartCount, setCartCount }) {
     if (allSelected) {
       try {
         await axios.delete(
-          "https://go-server-vbrc.onrender.com/api/selecteditems/clear",
+          "https://go-server-9p6w.onrender.com/api/selecteditems/clear",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -184,7 +184,7 @@ function Cart({ updateCartCount, setCartCount }) {
 
       try {
         await axios.post(
-          "https://go-server-vbrc.onrender.com/api/selecteditems/addMultiple",
+          "https://go-server-9p6w.onrender.com/api/selecteditems/addMultiple",
           selectedProducts,
           {
             headers: {
@@ -208,7 +208,7 @@ function Cart({ updateCartCount, setCartCount }) {
       newSelectedItems = selectedItems.filter((id) => id !== productId);
       try {
         await axios.delete(
-          "https://go-server-vbrc.onrender.com/api/selecteditems/remove",
+          "https://go-server-9p6w.onrender.com/api/selecteditems/remove",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -226,7 +226,7 @@ function Cart({ updateCartCount, setCartCount }) {
       );
       try {
         await axios.post(
-          "https://go-server-vbrc.onrender.com/api/selecteditems/add",
+          "https://go-server-9p6w.onrender.com/api/selecteditems/add",
           {
             product_id: productId,
             quantity: selectedProduct.quantity,
@@ -258,7 +258,7 @@ function Cart({ updateCartCount, setCartCount }) {
   const handleProceedToOrder = async () => {
     try {
       const response = await axios.get(
-        "https://go-server-vbrc.onrender.com/api/selecteditems",
+        "https://go-server-9p6w.onrender.com/api/selecteditems",
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }

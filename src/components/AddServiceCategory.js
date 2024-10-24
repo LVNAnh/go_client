@@ -36,7 +36,7 @@ function AddServiceCategory() {
   const fetchServiceCategories = async () => {
     try {
       const response = await axios.get(
-        "https://go-server-vbrc.onrender.com/api/servicecategories"
+        "https://go-server-9p6w.onrender.com/api/servicecategories"
       );
       setServiceCategories(response.data);
     } catch (error) {
@@ -55,7 +55,7 @@ function AddServiceCategory() {
   const handleAddCategory = async () => {
     try {
       await axios.post(
-        "https://go-server-vbrc.onrender.com/api/servicecategory",
+        "https://go-server-9p6w.onrender.com/api/servicecategory",
         formData,
         {
           headers: {
@@ -82,7 +82,7 @@ function AddServiceCategory() {
   const handleUpdateCategory = async () => {
     try {
       await axios.put(
-        `https://go-server-vbrc.onrender.com/api/servicecategory/${editCategoryId}`,
+        `https://go-server-9p6w.onrender.com/api/servicecategory/${editCategoryId}`,
         formData,
         {
           headers: {
@@ -128,7 +128,7 @@ function AddServiceCategory() {
     ) {
       try {
         await axios.delete(
-          `https://go-server-vbrc.onrender.com/api/servicecategory/${categoryId}`,
+          `https://go-server-9p6w.onrender.com/api/servicecategory/${categoryId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

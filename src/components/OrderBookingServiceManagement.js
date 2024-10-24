@@ -27,7 +27,7 @@ function OrderBookingServiceManagement() {
   const fetchServices = async () => {
     try {
       const response = await axios.get(
-        "https://go-server-vbrc.onrender.com/api/services"
+        "https://go-server-9p6w.onrender.com/api/services"
       );
       setServices(response.data || []);
     } catch (error) {
@@ -39,7 +39,7 @@ function OrderBookingServiceManagement() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://go-server-vbrc.onrender.com/api/orderbookingservices",
+        "https://go-server-9p6w.onrender.com/api/orderbookingservices",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -61,7 +61,7 @@ function OrderBookingServiceManagement() {
     try {
       const token = localStorage.getItem("token");
       await axios.patch(
-        `https://go-server-vbrc.onrender.com/api/orderbookingservice/${id}/status`,
+        `https://go-server-9p6w.onrender.com/api/orderbookingservice/${id}/status`,
         { status: newStatus },
         {
           headers: { Authorization: `Bearer ${token}` },

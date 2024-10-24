@@ -54,7 +54,7 @@ function AddProduct() {
   const fetchProducts = async () => {
     try {
       const response = await axios.get(
-        "https://go-server-vbrc.onrender.com/api/products"
+        "https://go-server-9p6w.onrender.com/api/products"
       );
       setProducts(response.data || []);
     } catch (error) {
@@ -66,7 +66,7 @@ function AddProduct() {
   const fetchProductCategories = async () => {
     try {
       const response = await axios.get(
-        "https://go-server-vbrc.onrender.com/api/productcategories"
+        "https://go-server-9p6w.onrender.com/api/productcategories"
       );
       setProductCategories(response.data || []);
     } catch (error) {
@@ -141,7 +141,7 @@ function AddProduct() {
 
     try {
       await axios.post(
-        "https://go-server-vbrc.onrender.com/api/product",
+        "https://go-server-9p6w.onrender.com/api/product",
         formDataToSend,
         {
           headers: {
@@ -178,7 +178,7 @@ function AddProduct() {
 
     try {
       await axios.put(
-        `https://go-server-vbrc.onrender.com/api/product/${editProductId}`,
+        `https://go-server-9p6w.onrender.com/api/product/${editProductId}`,
         formDataToSend,
         {
           headers: {
@@ -224,7 +224,7 @@ function AddProduct() {
   const confirmDelete = async () => {
     try {
       await axios.delete(
-        `https://go-server-vbrc.onrender.com/api/product/${deleteProductId}`,
+        `https://go-server-9p6w.onrender.com/api/product/${deleteProductId}`,
         {
           headers: {
             Authorization: `Bearer ${getToken()}`,

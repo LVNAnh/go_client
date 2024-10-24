@@ -57,7 +57,7 @@ function AdminMenu() {
         <MenuItem component={Link} to="/add-product-category">
           Quản lý danh mục sản phẩm
         </MenuItem>
-        <MenuItem component={Link} to="/add-product">
+        <MenuItem component={Link} to="https://cleeny.onrender.com/add-product">
           Quản lý sản phẩm
         </MenuItem>
         <MenuItem component={Link} to="/add-service-category">

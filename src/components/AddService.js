@@ -56,11 +56,14 @@ function AddService() {
 
   const fetchServices = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/services", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        "https://go-server-vbrc.onrender.com/api/services",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setServices(response.data || []);
     } catch (error) {
       console.error("Error fetching services:", error);
@@ -71,7 +74,7 @@ function AddService() {
   const fetchServiceCategories = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/servicecategories",
+        "https://go-server-vbrc.onrender.com/api/servicecategories",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -148,12 +151,16 @@ function AddService() {
     }
 
     try {
-      await axios.post("http://localhost:8080/api/service", formDataToSend, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios.post(
+        "https://go-server-vbrc.onrender.com/api/service",
+        formDataToSend,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       setSnackbar({
         open: true,
         message: "Dịch vụ đã được thêm!",
@@ -186,7 +193,7 @@ function AddService() {
 
     try {
       await axios.put(
-        `http://localhost:8080/api/service/${editServiceId}`,
+        `https://go-server-vbrc.onrender.com/api/service/${editServiceId}`,
         formDataToSend,
         {
           headers: {
@@ -219,7 +226,7 @@ function AddService() {
   const confirmDelete = async () => {
     try {
       await axios.delete(
-        `http://localhost:8080/api/service/${deleteServiceId}`,
+        `https://go-server-vbrc.onrender.com/api/service/${deleteServiceId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

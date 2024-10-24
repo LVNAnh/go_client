@@ -15,18 +15,21 @@ function RegisterForm() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8080/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          firstname,
-          lastname,
-          email,
-          password,
-          phone,
-          address,
-        }),
-      });
+      const response = await fetch(
+        "https://go-server-vbrc.onrender.com/api/register",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            firstname,
+            lastname,
+            email,
+            password,
+            phone,
+            address,
+          }),
+        }
+      );
 
       if (response.ok) {
         navigate("/login");

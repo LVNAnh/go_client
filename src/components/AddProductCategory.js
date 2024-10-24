@@ -36,7 +36,7 @@ function AddProductCategory() {
   const fetchProductCategories = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/productcategories",
+        "https://go-server-vbrc.onrender.com/api/productcategories",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -59,11 +59,15 @@ function AddProductCategory() {
 
   const handleAddCategory = async () => {
     try {
-      await axios.post("http://localhost:8080/api/productcategory", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axios.post(
+        "https://go-server-vbrc.onrender.com/api/productcategory",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setSnackbar({
         open: true,
         message: "Danh mục sản phẩm đã được thêm!",
@@ -83,7 +87,7 @@ function AddProductCategory() {
   const handleUpdateCategory = async () => {
     try {
       await axios.put(
-        `http://localhost:8080/api/productcategory/${editCategoryId}`,
+        `https://go-server-vbrc.onrender.com/api/productcategory/${editCategoryId}`,
         formData,
         {
           headers: {
@@ -129,7 +133,7 @@ function AddProductCategory() {
     ) {
       try {
         await axios.delete(
-          `http://localhost:8080/api/productcategory/${categoryId}`,
+          `https://go-server-vbrc.onrender.com/api/productcategory/${categoryId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

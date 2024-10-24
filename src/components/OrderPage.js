@@ -26,7 +26,7 @@ function OrderPage() {
     const fetchSelectedItems = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/api/selecteditems",
+          "https://go-server-vbrc.onrender.com/api/selecteditems",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -70,7 +70,7 @@ function OrderPage() {
   const handlePlaceOrder = async () => {
     try {
       const selectedItemsResponse = await axios.get(
-        "http://localhost:8080/api/selecteditems",
+        "https://go-server-vbrc.onrender.com/api/selecteditems",
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
@@ -88,7 +88,7 @@ function OrderPage() {
       }
 
       const orderResponse = await axios.post(
-        "http://localhost:8080/api/order",
+        "https://go-server-vbrc.onrender.com/api/order",
         { items: selectedProducts },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -102,9 +102,14 @@ function OrderPage() {
           severity: "success",
         });
 
-        await axios.delete("http://localhost:8080/api/selecteditems/clear", {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
+        await axios.delete(
+          "https://go-server-vbrc.onrender.com/api/selecteditems/clear",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
 
         setOpenDialog(false);
         navigate("/shop");

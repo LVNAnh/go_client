@@ -93,9 +93,12 @@ function AppContent() {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        const response = await axios.get("http://localhost:8080/api/cart", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await axios.get(
+          "https://go-server-vbrc.onrender.com/api/cart",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         const cartItems = response.data.items || [];
         setCartItems(cartItems);
         const distinctProductsCount = cartItems.length;

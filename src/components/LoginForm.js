@@ -11,11 +11,14 @@ function LoginForm({ setUser, updateCartCount }) {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8080/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetch(
+        "https://go-server-vbrc.onrender.com/api/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
       if (response.ok) {
         const userData = await response.json();

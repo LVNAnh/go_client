@@ -45,7 +45,9 @@ function ServiceBooking() {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/services");
+        const response = await axios.get(
+          "https://go-server-vbrc.onrender.com/api/services"
+        );
         setServices(response.data);
       } catch (error) {
         console.error("Error fetching services", error);
@@ -105,7 +107,7 @@ function ServiceBooking() {
       };
 
       const response = await axios.post(
-        "http://localhost:8080/api/orderbookingservice",
+        "https://go-server-vbrc.onrender.com/api/orderbookingservice",
         bookingData,
         {
           headers: {

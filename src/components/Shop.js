@@ -28,7 +28,9 @@ function Shop({ updateCartCount }) {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/products");
+        const response = await axios.get(
+          "https://go-server-vbrc.onrender.com/api/products"
+        );
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products", error);
@@ -48,7 +50,7 @@ function Shop({ updateCartCount }) {
     try {
       const cartItem = { product_id: product.id, quantity: 1 };
       const response = await axios.post(
-        "http://localhost:8080/api/cart/add",
+        "https://go-server-vbrc.onrender.com/api/cart/add",
         cartItem,
         {
           headers: {

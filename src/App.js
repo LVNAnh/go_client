@@ -57,7 +57,7 @@ function AdminMenu() {
         <MenuItem component={Link} to="/add-product-category">
           Quản lý danh mục sản phẩm
         </MenuItem>
-        <MenuItem component={Link} to="https://cleeny.onrender.com/add-product">
+        <MenuItem component={Link} to="/add-product">
           Quản lý sản phẩm
         </MenuItem>
         <MenuItem component={Link} to="/add-service-category">
@@ -219,10 +219,7 @@ function AppContent() {
                 path="/add-product-category"
                 element={<AddProductCategory />}
               />
-              <Route
-                path="https://cleeny.onrender.com/add-product"
-                element={<AddProduct />}
-              />
+              <Route path="/add-product" element={<AddProduct />} />
               <Route
                 path="/add-service-category"
                 element={<AddServiceCategory />}

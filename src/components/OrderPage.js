@@ -12,6 +12,8 @@ import {
 } from "@mui/material";
 import axios from "axios";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 function OrderPage() {
   const navigate = useNavigate();
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -25,14 +27,11 @@ function OrderPage() {
   useEffect(() => {
     const fetchSelectedItems = async () => {
       try {
-        const response = await axios.get(
-          "https://go-server-9p6w.onrender.com/api/selecteditems",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const response = await axios.get(`${API_URL}/api/selecteditems`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         if (response.data.items) {
           setSelectedProducts(response.data.items);
         } else {
@@ -70,7 +69,7 @@ function OrderPage() {
   const handlePlaceOrder = async () => {
     try {
       const selectedItemsResponse = await axios.get(
-        "https://go-server-9p6w.onrender.com/api/selecteditems",
+        `${API_URL}/api/selecteditems`,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
@@ -88,7 +87,7 @@ function OrderPage() {
       }
 
       const orderResponse = await axios.post(
-        "https://go-server-9p6w.onrender.com/api/order",
+        `${API_URL}/api/order`,
         { items: selectedProducts },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -102,14 +101,11 @@ function OrderPage() {
           severity: "success",
         });
 
-        await axios.delete(
-          "https://go-server-9p6w.onrender.com/api/selecteditems/clear",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        await axios.delete(`${API_URL}/api/selecteditems/clear`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
 
         setOpenDialog(false);
         navigate("/shop");

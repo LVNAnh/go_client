@@ -21,8 +21,9 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
-
 import districtsData from "../data/districts.json";
+
+const API_URL = process.env.REACT_APP_API_URL;
 
 function ServiceBooking() {
   const [services, setServices] = useState([]);
@@ -45,9 +46,7 @@ function ServiceBooking() {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await axios.get(
-          "https://go-server-9p6w.onrender.com/api/services"
-        );
+        const response = await axios.get(`${API_URL}/api/services`);
         setServices(response.data);
       } catch (error) {
         console.error("Error fetching services", error);
@@ -107,7 +106,7 @@ function ServiceBooking() {
       };
 
       const response = await axios.post(
-        "https://go-server-9p6w.onrender.com/api/orderbookingservice",
+        `${API_URL}/api/orderbookingservice`,
         bookingData,
         {
           headers: {

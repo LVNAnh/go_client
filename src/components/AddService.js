@@ -25,6 +25,7 @@ import {
 import { FaEdit, FaTrash } from "react-icons/fa";
 
 const SERVICES_PER_PAGE = 20;
+const API_URL = process.env.REACT_APP_API_URL;
 
 function AddService() {
   const [services, setServices] = useState([]);
@@ -56,14 +57,11 @@ function AddService() {
 
   const fetchServices = async () => {
     try {
-      const response = await axios.get(
-        "https://go-server-9p6w.onrender.com/api/services",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`${API_URL}/api/services`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setServices(response.data || []);
     } catch (error) {
       console.error("Error fetching services:", error);
@@ -73,14 +71,11 @@ function AddService() {
 
   const fetchServiceCategories = async () => {
     try {
-      const response = await axios.get(
-        "https://go-server-9p6w.onrender.com/api/servicecategories",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`${API_URL}/api/servicecategories`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setServiceCategories(response.data || []);
     } catch (error) {
       console.error("Error fetching service categories:", error);
@@ -151,16 +146,12 @@ function AddService() {
     }
 
     try {
-      await axios.post(
-        "https://go-server-9p6w.onrender.com/api/service",
-        formDataToSend,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      await axios.post(`${API_URL}/api/service`, formDataToSend, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
       setSnackbar({
         open: true,
         message: "Dịch vụ đã được thêm!",
@@ -193,7 +184,7 @@ function AddService() {
 
     try {
       await axios.put(
-        `https://go-server-9p6w.onrender.com/api/service/${editServiceId}`,
+        `${API_URL}/api/service/${editServiceId}`,
         formDataToSend,
         {
           headers: {
@@ -225,14 +216,11 @@ function AddService() {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(
-        `https://go-server-9p6w.onrender.com/api/service/${deleteServiceId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await axios.delete(`${API_URL}/api/service/${deleteServiceId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setSnackbar({
         open: true,
         message: "Dịch vụ đã được xóa!",

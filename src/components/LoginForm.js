@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 function LoginForm({ setUser, updateCartCount }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -11,14 +13,11 @@ function LoginForm({ setUser, updateCartCount }) {
     e.preventDefault();
 
     try {
-      const response = await fetch(
-        "https://go-server-9p6w.onrender.com/api/login",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        }
-      );
+      const response = await fetch(`${API_URL}/api/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
       if (response.ok) {
         const userData = await response.json();

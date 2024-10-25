@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 function RegisterForm() {
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
@@ -15,21 +17,18 @@ function RegisterForm() {
     e.preventDefault();
 
     try {
-      const response = await fetch(
-        "https://go-server-9p6w.onrender.com/api/register",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            firstname,
-            lastname,
-            email,
-            password,
-            phone,
-            address,
-          }),
-        }
-      );
+      const response = await fetch(`${API_URL}/api/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstname,
+          lastname,
+          email,
+          password,
+          phone,
+          address,
+        }),
+      });
 
       if (response.ok) {
         navigate("/login");

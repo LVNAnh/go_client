@@ -25,6 +25,7 @@ import {
 import { FaEdit, FaTrash } from "react-icons/fa";
 
 const PRODUCTS_PER_PAGE = 20;
+const API_URL = process.env.REACT_APP_API_URL;
 
 function AddProduct() {
   const [products, setProducts] = useState([]);
@@ -53,9 +54,7 @@ function AddProduct() {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(
-        "https://go-server-9p6w.onrender.com/api/products"
-      );
+      const response = await axios.get(`${API_URL}/api/products`);
       setProducts(response.data || []);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -65,9 +64,7 @@ function AddProduct() {
 
   const fetchProductCategories = async () => {
     try {
-      const response = await axios.get(
-        "https://go-server-9p6w.onrender.com/api/productcategories"
-      );
+      const response = await axios.get(`${API_URL}/api/productcategories`);
       setProductCategories(response.data || []);
     } catch (error) {
       console.error("Error fetching product categories:", error);
@@ -140,16 +137,12 @@ function AddProduct() {
     }
 
     try {
-      await axios.post(
-        "https://go-server-9p6w.onrender.com/api/product",
-        formDataToSend,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${getToken()}`,
-          },
-        }
-      );
+      await axios.post(`${API_URL}/api/product`, formDataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${getToken()}`,
+        },
+      });
       setSnackbar({
         open: true,
         message: "Sản phẩm đã được thêm!",
@@ -178,7 +171,7 @@ function AddProduct() {
 
     try {
       await axios.put(
-        `https://go-server-9p6w.onrender.com/api/product/${editProductId}`,
+        `${API_URL}/api/product/${editProductId}`,
         formDataToSend,
         {
           headers: {
@@ -223,14 +216,11 @@ function AddProduct() {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(
-        `https://go-server-9p6w.onrender.com/api/product/${deleteProductId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          },
-        }
-      );
+      await axios.delete(`${API_URL}/api/product/${deleteProductId}`, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      });
       setSnackbar({
         open: true,
         message: "Sản phẩm đã được xóa!",

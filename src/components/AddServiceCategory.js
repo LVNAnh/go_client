@@ -19,6 +19,8 @@ import {
 } from "@mui/material";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 function AddServiceCategory() {
   const [serviceCategories, setServiceCategories] = useState([]);
   const [showDialog, setShowDialog] = useState(false);
@@ -35,9 +37,7 @@ function AddServiceCategory() {
 
   const fetchServiceCategories = async () => {
     try {
-      const response = await axios.get(
-        "https://go-server-9p6w.onrender.com/api/servicecategories"
-      );
+      const response = await axios.get(`${API_URL}/api/servicecategories`);
       setServiceCategories(response.data);
     } catch (error) {
       console.error("Error fetching service categories:", error);
@@ -54,15 +54,11 @@ function AddServiceCategory() {
 
   const handleAddCategory = async () => {
     try {
-      await axios.post(
-        "https://go-server-9p6w.onrender.com/api/servicecategory",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await axios.post(`${API_URL}/api/servicecategory`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setSnackbar({
         open: true,
         message: "Danh mục dịch vụ đã được thêm!",
@@ -82,7 +78,7 @@ function AddServiceCategory() {
   const handleUpdateCategory = async () => {
     try {
       await axios.put(
-        `https://go-server-9p6w.onrender.com/api/servicecategory/${editCategoryId}`,
+        `${API_URL}/api/servicecategory/${editCategoryId}`,
         formData,
         {
           headers: {
@@ -127,14 +123,11 @@ function AddServiceCategory() {
       window.confirm("Bạn có chắc chắn muốn xóa danh mục dịch vụ này không?")
     ) {
       try {
-        await axios.delete(
-          `https://go-server-9p6w.onrender.com/api/servicecategory/${categoryId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        await axios.delete(`${API_URL}/api/servicecategory/${categoryId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setSnackbar({
           open: true,
           message: "Danh mục dịch vụ đã được xóa!",

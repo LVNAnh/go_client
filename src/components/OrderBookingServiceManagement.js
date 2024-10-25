@@ -14,6 +14,8 @@ import {
   MenuItem,
 } from "@mui/material";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 function OrderBookingServiceManagement() {
   const [orders, setOrders] = useState([]);
   const [services, setServices] = useState([]);
@@ -26,9 +28,7 @@ function OrderBookingServiceManagement() {
 
   const fetchServices = async () => {
     try {
-      const response = await axios.get(
-        "https://go-server-9p6w.onrender.com/api/services"
-      );
+      const response = await axios.get(`${API_URL}/api/services`);
       setServices(response.data || []);
     } catch (error) {
       console.error("Error fetching services:", error);
@@ -39,7 +39,7 @@ function OrderBookingServiceManagement() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://go-server-9p6w.onrender.com/api/orderbookingservices/all",
+        `${API_URL}/api/orderbookingservices/all`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -61,7 +61,7 @@ function OrderBookingServiceManagement() {
     try {
       const token = localStorage.getItem("token");
       await axios.patch(
-        `https://go-server-9p6w.onrender.com/api/orderbookingservice/${id}/status`,
+        `${API_URL}/api/orderbookingservice/${id}/status`,
         { status: newStatus },
         {
           headers: { Authorization: `Bearer ${token}` },

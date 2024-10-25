@@ -19,6 +19,8 @@ import {
 } from "@mui/material";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 function AddProductCategory() {
   const [productCategories, setProductCategories] = useState([]);
   const [showDialog, setShowDialog] = useState(false);
@@ -35,14 +37,11 @@ function AddProductCategory() {
 
   const fetchProductCategories = async () => {
     try {
-      const response = await axios.get(
-        "https://go-server-9p6w.onrender.com/api/productcategories",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`${API_URL}/api/productcategories`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setProductCategories(response.data);
     } catch (error) {
       console.error("Error fetching product categories:", error);
@@ -59,15 +58,11 @@ function AddProductCategory() {
 
   const handleAddCategory = async () => {
     try {
-      await axios.post(
-        "https://go-server-9p6w.onrender.com/api/productcategory",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await axios.post(`${API_URL}/api/productcategory`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setSnackbar({
         open: true,
         message: "Danh mục sản phẩm đã được thêm!",
@@ -87,7 +82,7 @@ function AddProductCategory() {
   const handleUpdateCategory = async () => {
     try {
       await axios.put(
-        `https://go-server-9p6w.onrender.com/api/productcategory/${editCategoryId}`,
+        `${API_URL}/api/productcategory/${editCategoryId}`,
         formData,
         {
           headers: {
@@ -132,14 +127,11 @@ function AddProductCategory() {
       window.confirm("Bạn có chắc chắn muốn xóa danh mục sản phẩm này không?")
     ) {
       try {
-        await axios.delete(
-          `https://go-server-9p6w.onrender.com/api/productcategory/${categoryId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        await axios.delete(`${API_URL}/api/productcategory/${categoryId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setSnackbar({
           open: true,
           message: "Danh mục sản phẩm đã được xóa!",

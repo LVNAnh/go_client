@@ -15,6 +15,8 @@ import {
 import { Delete } from "@mui/icons-material";
 import axios from "axios";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 function Cart({ updateCartCount, setCartCount }) {
   const [cartItems, setCartItems] = useState([]);
   const [user, setUser] = useState(null);
@@ -31,21 +33,15 @@ function Cart({ updateCartCount, setCartCount }) {
 
   const fetchCartItems = useCallback(async () => {
     try {
-      const response = await axios.get(
-        "https://go-server-9p6w.onrender.com/api/cart",
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
+      const response = await axios.get(`${API_URL}/api/cart`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setCartItems(response.data.items || []);
       updateCartCount();
 
-      const selectedResponse = await axios.get(
-        "https://go-server-9p6w.onrender.com/api/selecteditems",
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
+      const selectedResponse = await axios.get(`${API_URL}/api/selecteditems`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       const selectedProductIds = selectedResponse.data.items.map(
         (item) => item.product_id
       );
@@ -76,15 +72,12 @@ function Cart({ updateCartCount, setCartCount }) {
 
   const handleRemoveItem = async () => {
     try {
-      const response = await axios.delete(
-        "https://go-server-9p6w.onrender.com/api/cart/remove",
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          data: { product_id: itemToDelete.product_id },
-        }
-      );
+      const response = await axios.delete(`${API_URL}/api/cart/remove`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        data: { product_id: itemToDelete.product_id },
+      });
 
       if (response.status === 200) {
         const updatedCartItems = cartItems.filter(
@@ -120,7 +113,7 @@ function Cart({ updateCartCount, setCartCount }) {
     }
     try {
       const response = await axios.post(
-        "https://go-server-9p6w.onrender.com/api/cart/update",
+        `${API_URL}/api/cart/update`,
         { product_id: productId, quantity },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -138,7 +131,7 @@ function Cart({ updateCartCount, setCartCount }) {
 
         if (selectedItems.includes(productId)) {
           await axios.post(
-            "https://go-server-9p6w.onrender.com/api/selecteditems/update",
+            `${API_URL}/api/selecteditems/update`,
             { product_id: productId, quantity },
             {
               headers: {
@@ -161,14 +154,11 @@ function Cart({ updateCartCount, setCartCount }) {
   const handleSelectAll = async () => {
     if (allSelected) {
       try {
-        await axios.delete(
-          "https://go-server-9p6w.onrender.com/api/selecteditems/clear",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        await axios.delete(`${API_URL}/api/selecteditems/clear`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         setSelectedItems([]);
       } catch (error) {
         console.error("Error clearing selected items", error);
@@ -184,7 +174,7 @@ function Cart({ updateCartCount, setCartCount }) {
 
       try {
         await axios.post(
-          "https://go-server-9p6w.onrender.com/api/selecteditems/addMultiple",
+          `${API_URL}/api/selecteditems/addMultiple`,
           selectedProducts,
           {
             headers: {
@@ -207,15 +197,12 @@ function Cart({ updateCartCount, setCartCount }) {
     if (selectedItems.includes(productId)) {
       newSelectedItems = selectedItems.filter((id) => id !== productId);
       try {
-        await axios.delete(
-          "https://go-server-9p6w.onrender.com/api/selecteditems/remove",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-            data: { product_id: productId },
-          }
-        );
+        await axios.delete(`${API_URL}/api/selecteditems/remove`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          data: { product_id: productId },
+        });
       } catch (error) {
         console.error("Error removing selected item", error);
       }
@@ -226,7 +213,7 @@ function Cart({ updateCartCount, setCartCount }) {
       );
       try {
         await axios.post(
-          "https://go-server-9p6w.onrender.com/api/selecteditems/add",
+          `${API_URL}/api/selecteditems/add`,
           {
             product_id: productId,
             quantity: selectedProduct.quantity,
@@ -257,12 +244,9 @@ function Cart({ updateCartCount, setCartCount }) {
 
   const handleProceedToOrder = async () => {
     try {
-      const response = await axios.get(
-        "https://go-server-9p6w.onrender.com/api/selecteditems",
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
+      const response = await axios.get(`${API_URL}/api/selecteditems`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
 
       const selectedProducts = response.data.items;
       if (selectedProducts.length > 0) {

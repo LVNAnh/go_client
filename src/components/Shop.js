@@ -17,6 +17,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import CloseIcon from "@mui/icons-material/Close";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 function Shop({ updateCartCount }) {
   const [products, setProducts] = useState([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -28,9 +30,7 @@ function Shop({ updateCartCount }) {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(
-          "https://go-server-9p6w.onrender.com/api/products"
-        );
+        const response = await axios.get(`${API_URL}/api/products`);
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products", error);
@@ -49,15 +49,11 @@ function Shop({ updateCartCount }) {
 
     try {
       const cartItem = { product_id: product.id, quantity: 1 };
-      const response = await axios.post(
-        "https://go-server-9p6w.onrender.com/api/cart/add",
-        cartItem,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.post(`${API_URL}/api/cart/add`, cartItem, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       console.log("Product added to cart:", response.data);
       setSnackbarMessage(

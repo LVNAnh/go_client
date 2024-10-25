@@ -89,6 +89,8 @@ function OrderBookingServiceManagement() {
             <TableRow>
               <TableCell>STT</TableCell>
               <TableCell>Tên dịch vụ</TableCell>
+              <TableCell>Tên</TableCell>
+              <TableCell>SDT</TableCell>
               <TableCell>Số lượng</TableCell>
               <TableCell>Tổng giá</TableCell>
               <TableCell>Ngày đặt</TableCell>
@@ -101,6 +103,8 @@ function OrderBookingServiceManagement() {
               <TableRow key={order.id}>
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{getServiceName(order.service_id)}</TableCell>
+                <TableCell>{order.contact_name}</TableCell>
+                <TableCell>{order.contact_phone}</TableCell>
                 <TableCell>{order.quantity}</TableCell>
                 <TableCell>{order.total_price}</TableCell>
                 <TableCell>

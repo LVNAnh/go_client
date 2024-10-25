@@ -33,6 +33,8 @@ import {
 import { Search, ShoppingCart, Person } from "@mui/icons-material";
 import axios from "axios";
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 function AdminMenu() {
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -93,12 +95,9 @@ function AppContent() {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        const response = await axios.get(
-          "https://go-server-9p6w.onrender.com/api/cart",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const response = await axios.get(`${API_URL}/api/cart`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const cartItems = response.data.items || [];
         setCartItems(cartItems);
         const distinctProductsCount = cartItems.length;

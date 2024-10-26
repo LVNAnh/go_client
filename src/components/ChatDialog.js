@@ -1,153 +1,118 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import {
-  Dialog,
-  TextField,
-  Button,
   Box,
   Typography,
+  TextField,
+  Button,
   Paper,
+  IconButton,
+  Fab,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { Chat } from "@mui/icons-material";
 import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-const ChatDialog = ({
-  open,
-  onClose,
-  guestName,
-  setGuestName,
-  guestPhone,
-  setGuestPhone,
-  onStartChat,
-  isAdmin,
-}) => {
-  const [isChatStarted, setIsChatStarted] = useState(false);
-  const [message, setMessage] = useState("");
+const ChatDialog = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState("");
+  const [guestName, setGuestName] = useState("");
+  const [guestPhone, setGuestPhone] = useState("");
+  const [isChatStarted, setIsChatStarted] = useState(false);
   const ws = useRef(null);
 
-  const handleStartChat = async () => {
-    const payload = { guest_name: guestName, guest_phone: guestPhone };
-
-    try {
-      const response = await axios.post(`${API_URL}/api/create-chat`, payload);
-      console.log("Chat started:", response.data);
-      onStartChat(response.data);
-      setIsChatStarted(true);
-      fetchMessages(response.data.id);
-      openWebSocket(response.data.id);
-    } catch (error) {
-      console.error("Error starting chat:", error);
-    }
-  };
-
   const openWebSocket = (chatId) => {
-    ws.current = new WebSocket(`wss://go-server-9p6w.onrender.com/ws/chat`);
+    ws.current = new WebSocket(`${API_URL.replace("http", "ws")}/ws/chat`);
 
     ws.current.onopen = () => {
-      console.log("WebSocket connected");
       ws.current.send(JSON.stringify({ type: "join", chatId }));
     };
 
     ws.current.onmessage = (event) => {
       const msg = JSON.parse(event.data);
-      setMessages((prevMessages) => [...prevMessages, msg]);
+      setMessages((prev) => [...prev, msg]);
     };
 
     ws.current.onclose = () => {
       console.log("WebSocket disconnected");
     };
+  };
 
-    ws.current.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
+  const handleStartChat = async () => {
+    try {
+      const response = await axios.post(`${API_URL}/api/create-chat`, {
+        guest_name: guestName,
+        guest_phone: guestPhone,
+      });
+      openWebSocket(response.data.id);
+      setIsChatStarted(true);
+    } catch (error) {
+      console.error("Error starting chat:", error);
+    }
   };
 
   const handleSendMessage = () => {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
       const msg = {
-        chatId: messages[0]?.chatId,
         content: message,
-        senderRole: isAdmin ? "Admin" : "Guest",
+        senderRole: "Guest",
+        timestamp: new Date(),
       };
       ws.current.send(JSON.stringify(msg));
+      setMessages((prev) => [...prev, msg]);
       setMessage("");
     }
   };
 
-  const fetchMessages = async (chatId) => {
-    try {
-      const response = await axios.get(
-        `${API_URL}/api/chat/${chatId}/messages`
-      );
-      setMessages(response.data);
-    } catch (error) {
-      console.error("Error fetching messages:", error);
-    }
-  };
-
-  useEffect(() => {
-    if (open) {
-      setMessages([]);
-      setIsChatStarted(false);
-      if (isAdmin) {
-        openWebSocket();
-      }
-    }
-
-    return () => {
-      if (ws.current) {
-        ws.current.close();
-      }
-    };
-  }, [open]);
-
   return (
-    <Dialog open={open} onClose={onClose} fullWidth>
-      <Box p={2}>
-        <Typography variant="h6">
-          {isChatStarted ? "Chat" : "Start Chat"}
-        </Typography>
+    <Box
+      sx={{
+        position: "fixed",
+        bottom: 20,
+        right: 20,
+        width: 350,
+        maxHeight: "70vh",
+        bgcolor: "white",
+        boxShadow: 3,
+        borderRadius: 2,
+        overflow: "hidden",
+        display: isOpen ? "flex" : "none",
+        flexDirection: "column",
+      }}
+    >
+      <Box
+        sx={{
+          bgcolor: "primary.main",
+          p: 1,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          color: "white",
+        }}
+      >
+        <Typography variant="h6">Chat with Support</Typography>
+        <IconButton onClick={onClose} sx={{ color: "white" }}>
+          <CloseIcon />
+        </IconButton>
+      </Box>
 
+      <Box sx={{ p: 2, flex: 1, overflowY: "auto" }}>
         {isChatStarted ? (
-          <>
-            <Box sx={{ maxHeight: 400, overflowY: "auto", my: 2 }}>
-              {messages.map((msg) => (
-                <Paper
-                  key={msg.id}
-                  sx={{
-                    p: 1,
-                    mb: 1,
-                    bgcolor:
-                      msg.senderRole === "Admin" ? "lightblue" : "lightgrey",
-                  }}
-                >
-                  <Typography variant="body2">
-                    <strong>{msg.senderRole}:</strong> {msg.content}
-                  </Typography>
-                </Paper>
-              ))}
-            </Box>
-            {isAdmin ? (
-              <TextField
-                label="Reply"
-                fullWidth
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                sx={{ my: 1 }}
-              />
-            ) : null}
-            {isAdmin && (
-              <Button
-                onClick={handleSendMessage}
-                color="primary"
-                variant="contained"
-                sx={{ mt: 2 }}
-              >
-                Send
-              </Button>
-            )}
-          </>
+          messages.map((msg, index) => (
+            <Paper
+              key={index}
+              sx={{
+                p: 1,
+                my: 1,
+                alignSelf:
+                  msg.senderRole === "Guest" ? "flex-end" : "flex-start",
+                bgcolor: msg.senderRole === "Guest" ? "lightblue" : "lightgrey",
+              }}
+            >
+              <Typography variant="body2">{msg.content}</Typography>
+            </Paper>
+          ))
         ) : (
           <>
             <TextField
@@ -168,14 +133,50 @@ const ChatDialog = ({
               onClick={handleStartChat}
               color="primary"
               variant="contained"
+              fullWidth
             >
               Start Chat
             </Button>
           </>
         )}
       </Box>
-    </Dialog>
+
+      {isChatStarted && (
+        <Box sx={{ p: 1, display: "flex" }}>
+          <TextField
+            placeholder="Type a message..."
+            fullWidth
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+          />
+          <Button
+            onClick={handleSendMessage}
+            color="primary"
+            variant="contained"
+          >
+            Send
+          </Button>
+        </Box>
+      )}
+    </Box>
   );
 };
 
-export default ChatDialog;
+export default function ChatWidget() {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
+  return (
+    <>
+      <ChatDialog isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+      <Fab
+        color="primary"
+        aria-label="chat"
+        sx={{ position: "fixed", bottom: 16, right: 16 }}
+        onClick={() => setIsChatOpen(true)}
+      >
+        <Chat />
+      </Fab>
+    </>
+  );
+}

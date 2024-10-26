@@ -18,7 +18,7 @@ import Cart from "./components/Cart";
 import ServiceBooking from "./components/ServiceBooking";
 import OrderPage from "./components/OrderPage";
 import OrderBookingServiceManagement from "./components/OrderBookingServiceManagement";
-import ChatDialog from "./components/ChatDialog";
+import ChatWidget from "./components/ChatDialog"; // Update to ChatWidget
 import NotificationList from "./components/NotificationList";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
@@ -260,20 +260,11 @@ function AppContent() {
               <LoginForm setUser={setUser} updateCartCount={updateCartCount} />
             }
           />
-
           <Route
             path="/shop"
             element={<Shop updateCartCount={updateCartCount} />}
           />
-          <Route
-            path="/cart"
-            element={
-              <Cart
-                updateCartCount={updateCartCount}
-                setCartCount={setCartCount}
-              />
-            }
-          />
+          <Route path="/cart" element={<Cart />} />
           <Route path="/order" element={<OrderPage />} />
           <Route path="/service-booking" element={<ServiceBooking />} />
 
@@ -299,6 +290,7 @@ function AppContent() {
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Box>
+
       <Fab
         color="primary"
         aria-label="chat"
@@ -308,7 +300,7 @@ function AppContent() {
         <Chat />
       </Fab>
 
-      <ChatDialog
+      <ChatWidget
         open={openChatDialog}
         onClose={handleChatDialogClose}
         guestName={guestName}

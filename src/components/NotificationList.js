@@ -10,10 +10,10 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-const NotificationList = ({ open, onClose, chatList = [] }) => (
+const NotificationList = ({ open, onClose, chatList = [], onSelectChat }) => (
   <Dialog open={open} onClose={onClose} fullWidth>
     <DialogTitle>
-      Chat Notifications
+      Chat Requests
       <IconButton
         aria-label="close"
         onClick={onClose}
@@ -29,14 +29,10 @@ const NotificationList = ({ open, onClose, chatList = [] }) => (
     <DialogContent>
       <List>
         {chatList.map((chat) => (
-          <ListItem key={chat.id} button>
+          <ListItem key={chat.id} button onClick={() => onSelectChat(chat.id)}>
             <ListItemText
               primary={chat.guest_name || "Anonymous Guest"}
-              secondary={
-                chat.messages?.length > 0
-                  ? chat.messages[chat.messages.length - 1]?.content
-                  : "No messages yet"
-              }
+              secondary="Wants to start a chat"
             />
           </ListItem>
         ))}

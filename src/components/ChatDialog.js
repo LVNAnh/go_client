@@ -51,7 +51,7 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
 
   const handleStartChat = async () => {
     if (chatId) {
-      openWebSocket(chatId); // Admin joining existing chat
+      openWebSocket(chatId);
       setIsChatStarted(true);
       return;
     }
@@ -72,13 +72,27 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
       const msg = {
         content: message,
-        senderRole: isAdmin ? "Admin" : "Guest",
-        timestamp: new Date(),
+        senderRole: isAdmin ? "Admin" : guestName,
+        timestamp: new Date().toISOString(),
       };
       ws.current.send(JSON.stringify(msg));
-      setMessages((prev) => [...prev, msg]);
-      setMessage("");
+      setMessage(""); // Clear input after sending
     }
+  };
+
+  // Convert timestamp to GMT+7
+  const formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp);
+    const options = {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      timeZone: "Asia/Bangkok",
+    };
+    return date.toLocaleString("en-GB", options);
   };
 
   useEffect(() => {
@@ -132,16 +146,22 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
                 p: 1,
                 my: 1,
                 alignSelf:
-                  msg.senderRole === (isAdmin ? "Admin" : "Guest")
+                  msg.senderRole === (isAdmin ? "Admin" : guestName)
                     ? "flex-end"
                     : "flex-start",
                 bgcolor:
-                  msg.senderRole === (isAdmin ? "Admin" : "Guest")
+                  msg.senderRole === (isAdmin ? "Admin" : guestName)
                     ? "lightblue"
                     : "lightgrey",
               }}
             >
+              <Typography variant="caption" sx={{ fontWeight: "bold" }}>
+                {msg.senderRole}
+              </Typography>
               <Typography variant="body2">{msg.content}</Typography>
+              <Typography variant="caption" sx={{ fontStyle: "italic" }}>
+                {formatTimestamp(msg.timestamp)}
+              </Typography>
             </Paper>
           ))
         ) : (

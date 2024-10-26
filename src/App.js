@@ -18,6 +18,7 @@ import Cart from "./components/Cart";
 import ServiceBooking from "./components/ServiceBooking";
 import OrderPage from "./components/OrderPage";
 import OrderBookingServiceManagement from "./components/OrderBookingServiceManagement";
+import ChatDialog from "./components/ChatDialog";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   AppBar,
@@ -29,8 +30,15 @@ import {
   Menu,
   MenuItem,
   Badge,
+  Fab,
 } from "@mui/material";
-import { Search, ShoppingCart, Person } from "@mui/icons-material";
+import {
+  Search,
+  ShoppingCart,
+  Person,
+  Chat,
+  Notifications,
+} from "@mui/icons-material";
 import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -79,6 +87,10 @@ function AdminMenu() {
 function AppContent() {
   const [user, setUser] = useState(null);
   const [cartCount, setCartCount] = useState(0);
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [openChatDialog, setOpenChatDialog] = useState(false);
+  const [guestName, setGuestName] = useState("");
+  const [guestPhone, setGuestPhone] = useState("");
   const [, setCartItems] = useState([]);
   const location = useLocation();
 
@@ -89,6 +101,7 @@ function AppContent() {
     }
 
     updateCartCount();
+    updateNotificationCount();
   }, []);
 
   const updateCartCount = async () => {
@@ -108,6 +121,15 @@ function AppContent() {
     }
   };
 
+  const updateNotificationCount = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/api/notifications`);
+      setNotificationCount(response.data.unreadCount);
+    } catch (error) {
+      console.error("Error fetching notification count:", error);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
@@ -115,6 +137,19 @@ function AppContent() {
     setCartCount(0);
     setCartItems([]);
     window.location.reload();
+  };
+
+  const handleChatIconClick = () => {
+    setOpenChatDialog(true);
+  };
+
+  const handleChatDialogClose = () => {
+    setOpenChatDialog(false);
+  };
+
+  const handleStartChat = () => {
+    console.log("Starting chat with:", guestName, guestPhone);
+    setOpenChatDialog(false);
   };
 
   return (
@@ -156,6 +191,12 @@ function AppContent() {
             <IconButton color="inherit" component={Link} to="/cart">
               <Badge badgeContent={cartCount} color="error">
                 <ShoppingCart />
+              </Badge>
+            </IconButton>
+
+            <IconButton color="inherit">
+              <Badge badgeContent={notificationCount} color="error">
+                <Notifications />
               </Badge>
             </IconButton>
 
@@ -234,6 +275,24 @@ function AppContent() {
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Box>
+      <Fab
+        color="primary"
+        aria-label="chat"
+        sx={{ position: "fixed", bottom: 16, right: 16 }}
+        onClick={handleChatIconClick}
+      >
+        <Chat />
+      </Fab>
+
+      <ChatDialog
+        open={openChatDialog}
+        onClose={handleChatDialogClose}
+        guestName={guestName}
+        setGuestName={setGuestName}
+        guestPhone={guestPhone}
+        setGuestPhone={setGuestPhone}
+        onStartChat={handleStartChat}
+      />
     </Box>
   );
 }

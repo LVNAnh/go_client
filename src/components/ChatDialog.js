@@ -21,22 +21,19 @@ const ChatDialog = ({
   onStartChat,
   isAdmin,
 }) => {
+  const [isChatStarted, setIsChatStarted] = useState(false);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const ws = useRef(null);
 
   const handleStartChat = async () => {
-    const payload = {
-      guest_name: guestName,
-      guest_phone: guestPhone,
-    };
-
-    console.log("Payload being sent to server:", JSON.stringify(payload));
+    const payload = { guest_name: guestName, guest_phone: guestPhone };
 
     try {
       const response = await axios.post(`${API_URL}/api/create-chat`, payload);
       console.log("Chat started:", response.data);
       onStartChat(response.data);
+      setIsChatStarted(true);
       fetchMessages(response.data.id);
       openWebSocket(response.data.id);
     } catch (error) {
@@ -92,6 +89,7 @@ const ChatDialog = ({
   useEffect(() => {
     if (open) {
       setMessages([]);
+      setIsChatStarted(false);
       if (isAdmin) {
         openWebSocket();
       }
@@ -107,31 +105,50 @@ const ChatDialog = ({
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
       <Box p={2}>
-        <Typography variant="h6">Chat</Typography>
-        <Box sx={{ maxHeight: 400, overflowY: "auto", my: 2 }}>
-          {messages.map((msg) => (
-            <Paper
-              key={msg.id}
-              sx={{
-                p: 1,
-                mb: 1,
-                bgcolor: msg.senderRole === "Admin" ? "lightblue" : "lightgrey",
-              }}
-            >
-              <Typography variant="body2">
-                <strong>{msg.senderRole}:</strong> {msg.content}
-              </Typography>
-            </Paper>
-          ))}
-        </Box>
-        {isAdmin ? (
-          <TextField
-            label="Reply"
-            fullWidth
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            sx={{ my: 1 }}
-          />
+        <Typography variant="h6">
+          {isChatStarted ? "Chat" : "Start Chat"}
+        </Typography>
+
+        {isChatStarted ? (
+          // Chế độ chat
+          <>
+            <Box sx={{ maxHeight: 400, overflowY: "auto", my: 2 }}>
+              {messages.map((msg) => (
+                <Paper
+                  key={msg.id}
+                  sx={{
+                    p: 1,
+                    mb: 1,
+                    bgcolor:
+                      msg.senderRole === "Admin" ? "lightblue" : "lightgrey",
+                  }}
+                >
+                  <Typography variant="body2">
+                    <strong>{msg.senderRole}:</strong> {msg.content}
+                  </Typography>
+                </Paper>
+              ))}
+            </Box>
+            {isAdmin ? (
+              <TextField
+                label="Reply"
+                fullWidth
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                sx={{ my: 1 }}
+              />
+            ) : null}
+            {isAdmin && (
+              <Button
+                onClick={handleSendMessage}
+                color="primary"
+                variant="contained"
+                sx={{ mt: 2 }}
+              >
+                Send
+              </Button>
+            )}
+          </>
         ) : (
           <>
             <TextField
@@ -156,16 +173,6 @@ const ChatDialog = ({
               Start Chat
             </Button>
           </>
-        )}
-        {isAdmin && (
-          <Button
-            onClick={handleSendMessage}
-            color="primary"
-            variant="contained"
-            sx={{ mt: 2 }}
-          >
-            Send
-          </Button>
         )}
       </Box>
     </Dialog>

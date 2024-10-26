@@ -31,8 +31,12 @@ const NotificationList = ({ open, onClose, chatList = [] }) => (
         {chatList.map((chat) => (
           <ListItem key={chat.id} button>
             <ListItemText
-              primary={chat.guestName || "Anonymous Guest"}
-              secondary={chat.messages[chat.messages.length - 1]?.content || ""}
+              primary={chat.guest_name || "Anonymous Guest"}
+              secondary={
+                chat.messages?.length > 0
+                  ? chat.messages[chat.messages.length - 1]?.content
+                  : "No messages yet"
+              }
             />
           </ListItem>
         ))}

@@ -32,7 +32,6 @@ import {
   MenuItem,
   Badge,
   Fab,
-  Dialog,
 } from "@mui/material";
 import {
   Search,
@@ -129,7 +128,7 @@ function AppContent() {
 
   const fetchChatList = async () => {
     try {
-      const response = await axios.get(`${API_URL}/api/admin/chats`, {
+      const response = await axios.get(`${API_URL}/api/admin/notifications`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setChatList(Array.isArray(response.data) ? response.data : []);
@@ -146,8 +145,10 @@ function AppContent() {
 
   const updateNotificationCount = async () => {
     try {
-      const response = await axios.get(`${API_URL}/api/notifications`);
-      setNotificationCount(response.data.unreadCount);
+      const response = await axios.get(`${API_URL}/api/admin/notifications`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      setNotificationCount(response.data?.length || 0);
     } catch (error) {
       console.error("Error fetching notification count:", error);
     }

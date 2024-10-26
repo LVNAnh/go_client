@@ -132,9 +132,10 @@ function AppContent() {
       const response = await axios.get(`${API_URL}/api/admin/chats`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-      setChatList(response.data);
+      setChatList(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Error fetching chat list:", error);
+      setChatList([]);
     }
   };
 

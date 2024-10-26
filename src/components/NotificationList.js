@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-const NotificationList = ({ open, onClose, chatList }) => (
+const NotificationList = ({ open, onClose, chatList = [] }) => (
   <Dialog open={open} onClose={onClose} fullWidth>
     <DialogTitle>
       Chat Notifications

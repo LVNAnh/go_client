@@ -21,7 +21,7 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
   const [guestName, setGuestName] = useState("");
   const [guestPhone, setGuestPhone] = useState("");
   const [isChatStarted, setIsChatStarted] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false); // State for minimized chat
+  const [isMinimized, setIsMinimized] = useState(false);
   const ws = useRef(null);
 
   const openWebSocket = (chatId, role = isAdmin ? "Admin" : "Guest") => {

@@ -23,7 +23,7 @@ const ChatDialog = ({ isOpen, onClose }) => {
   const ws = useRef(null);
 
   const openWebSocket = (chatId) => {
-    ws.current = new WebSocket(`${API_URL.replace("http", "ws")}/ws/chat`);
+    ws.current = new WebSocket("wss://go-server-9p6w.onrender.com/api/ws/chat");
 
     ws.current.onopen = () => {
       ws.current.send(JSON.stringify({ type: "join", chatId }));

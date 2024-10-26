@@ -19,6 +19,7 @@ import ServiceBooking from "./components/ServiceBooking";
 import OrderPage from "./components/OrderPage";
 import OrderBookingServiceManagement from "./components/OrderBookingServiceManagement";
 import ChatDialog from "./components/ChatDialog";
+import NotificationList from "./components/NotificationList";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   AppBar,
@@ -31,6 +32,7 @@ import {
   MenuItem,
   Badge,
   Fab,
+  Dialog,
 } from "@mui/material";
 import {
   Search,
@@ -93,13 +95,17 @@ function AppContent() {
   const [guestPhone, setGuestPhone] = useState("");
   const [, setCartItems] = useState([]);
   const location = useLocation();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [chatList, setChatList] = useState([]);
+  const [openNotificationList, setOpenNotificationList] = useState(false);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      setIsAdmin(parsedUser.role === 0);
     }
-
     updateCartCount();
     updateNotificationCount();
   }, []);
@@ -119,6 +125,22 @@ function AppContent() {
         console.error("Error fetching cart items:", error);
       }
     }
+  };
+
+  const fetchChatList = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/api/admin/chats`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      setChatList(response.data);
+    } catch (error) {
+      console.error("Error fetching chat list:", error);
+    }
+  };
+
+  const handleNotificationClick = () => {
+    fetchChatList();
+    setOpenNotificationList(true);
   };
 
   const updateNotificationCount = async () => {
@@ -194,7 +216,7 @@ function AppContent() {
               </Badge>
             </IconButton>
 
-            <IconButton color="inherit">
+            <IconButton color="inherit" onClick={handleNotificationClick}>
               <Badge badgeContent={notificationCount} color="error">
                 <Notifications />
               </Badge>
@@ -292,6 +314,13 @@ function AppContent() {
         guestPhone={guestPhone}
         setGuestPhone={setGuestPhone}
         onStartChat={handleStartChat}
+        isAdmin={isAdmin}
+      />
+
+      <NotificationList
+        open={openNotificationList}
+        onClose={() => setOpenNotificationList(false)}
+        chatList={chatList}
       />
     </Box>
   );

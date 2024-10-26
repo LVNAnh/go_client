@@ -1,13 +1,11 @@
-// components/ChatDialog.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   TextField,
   Button,
+  Box,
+  Typography,
+  Paper,
 } from "@mui/material";
 import axios from "axios";
 
@@ -21,8 +19,10 @@ const ChatDialog = ({
   guestPhone,
   setGuestPhone,
   onStartChat,
+  isAdmin,
 }) => {
   const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
 
   const handleStartChat = async () => {
     try {
@@ -31,7 +31,8 @@ const ChatDialog = ({
         guestPhone,
       });
       console.log("Chat started:", response.data);
-      onStartChat();
+      onStartChat(response.data);
+      fetchMessages(response.data.id);
     } catch (error) {
       console.error("Error starting chat:", error);
     }
@@ -50,57 +51,94 @@ const ChatDialog = ({
         { content: message },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log("Message sent:", response.data);
+      setMessages([...messages, response.data]);
       setMessage("");
     } catch (error) {
       console.error("Error sending message:", error);
     }
   };
 
+  const fetchMessages = async (chatId) => {
+    try {
+      const response = await axios.get(
+        `${API_URL}/api/chat/${chatId}/messages`
+      );
+      setMessages(response.data);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (open) {
+      setMessages([]);
+    }
+  }, [open]);
+
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Start Chat</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          Please enter your name and phone number to start the chat.
-        </DialogContentText>
-        <TextField
-          autoFocus
-          margin="dense"
-          label="Name"
-          type="text"
-          fullWidth
-          value={guestName}
-          onChange={(e) => setGuestName(e.target.value)}
-        />
-        <TextField
-          margin="dense"
-          label="Phone"
-          type="text"
-          fullWidth
-          value={guestPhone}
-          onChange={(e) => setGuestPhone(e.target.value)}
-        />
-        <TextField
-          margin="dense"
-          label="Message"
-          type="text"
-          fullWidth
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color="primary">
-          Cancel
-        </Button>
-        <Button onClick={handleStartChat} color="primary">
-          Start Chat
-        </Button>
-        <Button onClick={handleReplyChat} color="primary">
-          Reply
-        </Button>
-      </DialogActions>
+    <Dialog open={open} onClose={onClose} fullWidth>
+      <Box p={2}>
+        <Typography variant="h6">Chat</Typography>
+        <Box sx={{ maxHeight: 400, overflowY: "auto", my: 2 }}>
+          {messages.map((msg) => (
+            <Paper
+              key={msg.id}
+              sx={{
+                p: 1,
+                mb: 1,
+                bgcolor: msg.senderRole === "Admin" ? "lightblue" : "lightgrey",
+              }}
+            >
+              <Typography variant="body2">
+                <strong>{msg.senderRole}:</strong> {msg.content}
+              </Typography>
+            </Paper>
+          ))}
+        </Box>
+        {isAdmin ? (
+          <TextField
+            label="Reply"
+            fullWidth
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            sx={{ my: 1 }}
+          />
+        ) : (
+          <>
+            <TextField
+              label="Your Name"
+              fullWidth
+              value={guestName}
+              onChange={(e) => setGuestName(e.target.value)}
+              sx={{ my: 1 }}
+            />
+            <TextField
+              label="Your Phone"
+              fullWidth
+              value={guestPhone}
+              onChange={(e) => setGuestPhone(e.target.value)}
+              sx={{ my: 1 }}
+            />
+            <Button
+              onClick={handleStartChat}
+              color="primary"
+              variant="contained"
+            >
+              Start Chat
+            </Button>
+          </>
+        )}
+        {isAdmin && (
+          <Button
+            onClick={handleReplyChat}
+            color="primary"
+            variant="contained"
+            sx={{ mt: 2 }}
+          >
+            Send
+          </Button>
+        )}
+      </Box>
     </Dialog>
   );
 };

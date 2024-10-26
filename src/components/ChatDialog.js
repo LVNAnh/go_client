@@ -105,7 +105,11 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
   }, []);
 
   const handleMinimize = () => {
-    setIsMinimized(!isMinimized);
+    setIsMinimized(true);
+  };
+
+  const handleRestore = () => {
+    setIsMinimized(false);
   };
 
   return (
@@ -114,8 +118,8 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
         <Fab
           color="primary"
           aria-label="chat"
-          sx={{ position: "fixed", bottom: 16, right: 16 }}
-          onClick={() => setIsMinimized(false)}
+          sx={{ position: "fixed", bottom: 16, right: 86 }} // Position next to the main chat button
+          onClick={handleRestore}
         >
           <Chat />
         </Fab>

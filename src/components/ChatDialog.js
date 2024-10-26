@@ -26,7 +26,11 @@ const ChatDialog = ({
   const ws = useRef(null);
 
   const handleStartChat = async () => {
-    const payload = { guestName, guestPhone };
+    const payload = {
+      guest_name: guestName,
+      guest_phone: guestPhone,
+    };
+
     console.log("Payload being sent to server:", JSON.stringify(payload));
 
     try {

@@ -23,7 +23,6 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
   const [isChatStarted, setIsChatStarted] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [senderName, setSenderName] = useState("");
-  const userRole = isAdmin ? "Admin" : guestName;
   const ws = useRef(null);
 
   const openWebSocket = (chatId, role = isAdmin ? "Admin" : "Guest") => {
@@ -86,7 +85,7 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
       const msg = {
         content: message,
-        senderRole: userRole,
+        senderRole: isAdmin ? "Admin" : guestName,
         timestamp: new Date().toISOString(),
       };
       ws.current.send(JSON.stringify(msg));
@@ -182,15 +181,19 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
                 sx={{
                   p: 1,
                   my: 1,
-                  maxWidth: "80%",
                   alignSelf:
-                    msg.senderRole === userRole ? "flex-end" : "flex-start",
+                    msg.senderRole === (isAdmin ? "Admin" : guestName)
+                      ? "flex-end"
+                      : "flex-start",
                   bgcolor:
-                    msg.senderRole === userRole ? "lightblue" : "lightgrey",
+                    msg.senderRole === (isAdmin ? "Admin" : guestName)
+                      ? "lightblue"
+                      : "lightgrey",
                 }}
               >
                 <Typography variant="caption" sx={{ fontWeight: "bold" }}>
-                  {msg.senderRole === "Admin" ? "Admin" : senderName}
+                  {msg.senderRole}{" "}
+                  {msg.senderRole !== "Admin" && `(${senderName})`}
                 </Typography>
                 <Typography variant="body2">{msg.content}</Typography>
                 <Typography variant="caption" sx={{ fontStyle: "italic" }}>

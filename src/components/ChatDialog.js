@@ -26,6 +26,13 @@ const ChatDialog = ({
   const ws = useRef(null);
 
   const handleStartChat = async () => {
+    console.log("Guest Name:", guestName, "Guest Phone:", guestPhone);
+
+    if (!guestName || !guestPhone) {
+      console.error("Guest name and phone are required");
+      return;
+    }
+
     try {
       const response = await axios.post(`${API_URL}/api/create-chat`, {
         guestName,

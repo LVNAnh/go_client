@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Dialog,
   TextField,
@@ -23,6 +23,7 @@ const ChatDialog = ({
 }) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
+  const ws = useRef(null);
 
   const handleStartChat = async () => {
     try {
@@ -33,28 +34,43 @@ const ChatDialog = ({
       console.log("Chat started:", response.data);
       onStartChat(response.data);
       fetchMessages(response.data.id);
+      openWebSocket(response.data.id);
     } catch (error) {
       console.error("Error starting chat:", error);
     }
   };
 
-  const handleReplyChat = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      console.error("No token found");
-      return;
-    }
+  const openWebSocket = (chatId) => {
+    ws.current = new WebSocket(`${API_URL.replace("http", "ws")}/ws/chat`);
 
-    try {
-      const response = await axios.post(
-        `${API_URL}/api/reply-chat`,
-        { content: message },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setMessages([...messages, response.data]);
+    ws.current.onopen = () => {
+      console.log("WebSocket connected");
+      ws.current.send(JSON.stringify({ type: "join", chatId }));
+    };
+
+    ws.current.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+      setMessages((prevMessages) => [...prevMessages, msg]);
+    };
+
+    ws.current.onclose = () => {
+      console.log("WebSocket disconnected");
+    };
+
+    ws.current.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+  };
+
+  const handleSendMessage = () => {
+    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+      const msg = {
+        chatId: messages[0]?.chatId,
+        content: message,
+        senderRole: isAdmin ? "Admin" : "Guest",
+      };
+      ws.current.send(JSON.stringify(msg));
       setMessage("");
-    } catch (error) {
-      console.error("Error sending message:", error);
     }
   };
 
@@ -72,7 +88,16 @@ const ChatDialog = ({
   useEffect(() => {
     if (open) {
       setMessages([]);
+      if (isAdmin) {
+        openWebSocket();
+      }
     }
+
+    return () => {
+      if (ws.current) {
+        ws.current.close();
+      }
+    };
   }, [open]);
 
   return (
@@ -130,7 +155,7 @@ const ChatDialog = ({
         )}
         {isAdmin && (
           <Button
-            onClick={handleReplyChat}
+            onClick={handleSendMessage}
             color="primary"
             variant="contained"
             sx={{ mt: 2 }}

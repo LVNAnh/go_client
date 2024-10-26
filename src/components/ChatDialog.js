@@ -22,6 +22,7 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
   const [guestPhone, setGuestPhone] = useState("");
   const [isChatStarted, setIsChatStarted] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [senderName, setSenderName] = useState("");
   const ws = useRef(null);
 
   const openWebSocket = (chatId, role = isAdmin ? "Admin" : "Guest") => {
@@ -35,6 +36,7 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
     ws.current.onopen = () => {
       console.log("WebSocket connected");
       ws.current.send(JSON.stringify({ type: "join", chatId }));
+      fetchChatInfo(chatId);
     };
 
     ws.current.onmessage = (event) => {
@@ -49,6 +51,15 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
     ws.current.onclose = (event) => {
       console.log("WebSocket disconnected:", event);
     };
+  };
+
+  const fetchChatInfo = async (chatId) => {
+    try {
+      const response = await axios.get(`${API_URL}/api/chat-info/${chatId}`);
+      setSenderName(response.data.guest_name || "Guest");
+    } catch (error) {
+      console.error("Error fetching chat info:", error);
+    }
   };
 
   const handleStartChat = async () => {
@@ -78,7 +89,7 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
         timestamp: new Date().toISOString(),
       };
       ws.current.send(JSON.stringify(msg));
-      setMessage(""); // Clear input after sending
+      setMessage("");
     }
   };
 
@@ -118,7 +129,7 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
         <Fab
           color="primary"
           aria-label="chat"
-          sx={{ position: "fixed", bottom: 16, right: 86 }} // Position next to the main chat button
+          sx={{ position: "fixed", bottom: 16, right: 86 }}
           onClick={handleRestore}
         >
           <Chat />
@@ -181,7 +192,8 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
                 }}
               >
                 <Typography variant="caption" sx={{ fontWeight: "bold" }}>
-                  {msg.senderRole}
+                  {msg.senderRole}{" "}
+                  {msg.senderRole !== "Admin" && `(${senderName})`}
                 </Typography>
                 <Typography variant="body2">{msg.content}</Typography>
                 <Typography variant="caption" sx={{ fontStyle: "italic" }}>

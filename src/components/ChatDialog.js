@@ -23,7 +23,6 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
   const [isChatStarted, setIsChatStarted] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [senderName, setSenderName] = useState("");
-  const [userId, setUserId] = useState(null);
   const userRole = isAdmin ? "Admin" : guestName;
   const ws = useRef(null);
 
@@ -59,7 +58,6 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
     try {
       const response = await axios.get(`${API_URL}/api/chat/${chatId}/info`);
       setSenderName(response.data.guest_name || "Guest");
-      setUserId(response.data.user_id);
     } catch (error) {
       console.error("Error fetching chat info:", error);
     }
@@ -88,7 +86,6 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
       const msg = {
         content: message,
-        senderId: userId,
         senderRole: userRole,
         timestamp: new Date().toISOString(),
       };
@@ -187,14 +184,13 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
                   my: 1,
                   maxWidth: "80%",
                   alignSelf:
-                    msg.senderId === userId ? "flex-end" : "flex-start",
-                  bgcolor: msg.senderId === userId ? "lightblue" : "lightgrey",
+                    msg.senderRole === userRole ? "flex-end" : "flex-start",
+                  bgcolor:
+                    msg.senderRole === userRole ? "lightblue" : "lightgrey",
                 }}
               >
                 <Typography variant="caption" sx={{ fontWeight: "bold" }}>
-                  {msg.senderRole === "Admin"
-                    ? "Admin"
-                    : msg.guestName || senderName}
+                  {msg.senderRole === "Admin" ? "Admin" : senderName}
                 </Typography>
                 <Typography variant="body2">{msg.content}</Typography>
                 <Typography variant="caption" sx={{ fontStyle: "italic" }}>

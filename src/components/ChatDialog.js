@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -34,8 +34,15 @@ const ChatDialog = ({ isOpen, onClose }) => {
       setMessages((prev) => [...prev, msg]);
     };
 
-    ws.current.onclose = () => {
-      console.log("WebSocket disconnected");
+    ws.current.onclose = (event) => {
+      console.log("WebSocket disconnected:", event);
+      if (event.code !== 1000) {
+        setTimeout(() => openWebSocket(chatId), 5000);
+      }
+    };
+
+    ws.current.onerror = (error) => {
+      console.error("WebSocket error:", error);
     };
   };
 
@@ -64,6 +71,12 @@ const ChatDialog = ({ isOpen, onClose }) => {
       setMessage("");
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (ws.current) ws.current.close(1000, "Component unmounted");
+    };
+  }, []);
 
   return (
     <Box
@@ -114,7 +127,7 @@ const ChatDialog = ({ isOpen, onClose }) => {
             </Paper>
           ))
         ) : (
-          <>
+          <Box>
             <TextField
               label="Your Name"
               fullWidth
@@ -137,7 +150,7 @@ const ChatDialog = ({ isOpen, onClose }) => {
             >
               Start Chat
             </Button>
-          </>
+          </Box>
         )}
       </Box>
 

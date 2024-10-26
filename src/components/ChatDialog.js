@@ -26,19 +26,11 @@ const ChatDialog = ({
   const ws = useRef(null);
 
   const handleStartChat = async () => {
-    console.log("Guest Name:", guestName);
-    console.log("Guest Phone:", guestPhone);
-
-    if (!guestName || !guestPhone) {
-      console.error("Guest name and phone are required");
-      return;
-    }
+    const payload = { guestName, guestPhone };
+    console.log("Payload being sent to server:", JSON.stringify(payload));
 
     try {
-      const response = await axios.post(`${API_URL}/api/create-chat`, {
-        guestName,
-        guestPhone,
-      });
+      const response = await axios.post(`${API_URL}/api/create-chat`, payload);
       console.log("Chat started:", response.data);
       onStartChat(response.data);
       fetchMessages(response.data.id);

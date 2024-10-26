@@ -18,8 +18,7 @@ import Cart from "./components/Cart";
 import ServiceBooking from "./components/ServiceBooking";
 import OrderPage from "./components/OrderPage";
 import OrderBookingServiceManagement from "./components/OrderBookingServiceManagement";
-import ChatDialog from "./components/ChatDialog";
-import FloatingChat from "./components/FloatingChat";
+import ChatWidget from "./components/ChatDialog";
 import NotificationList from "./components/NotificationList";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
@@ -307,25 +306,17 @@ function AppContent() {
         <Chat />
       </Fab>
 
-      {isAdmin ? (
-        <FloatingChat
-          chatList={chatList}
-          onSelectChat={handleSelectChat}
-          selectedChatId={selectedChatId}
-          isAdmin={isAdmin}
-        />
-      ) : (
-        <ChatDialog
-          open={openChatDialog}
-          onClose={handleChatDialogClose}
-          guestName={guestName}
-          setGuestName={setGuestName}
-          guestPhone={guestPhone}
-          setGuestPhone={setGuestPhone}
-          onStartChat={handleStartChat}
-          chatId={selectedChatId}
-        />
-      )}
+      <ChatWidget
+        open={openChatDialog}
+        onClose={handleChatDialogClose}
+        guestName={guestName}
+        setGuestName={setGuestName}
+        guestPhone={guestPhone}
+        setGuestPhone={setGuestPhone}
+        onStartChat={handleStartChat}
+        isAdmin={isAdmin}
+        chatId={selectedChatId}
+      />
 
       <NotificationList
         open={openNotificationList}

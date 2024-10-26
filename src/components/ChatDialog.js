@@ -42,7 +42,7 @@ const ChatDialog = ({
   };
 
   const openWebSocket = (chatId) => {
-    ws.current = new WebSocket(`${API_URL.replace("http", "ws")}/ws/chat`);
+    ws.current = new WebSocket(`wss://go-server-9p6w.onrender.com/ws/chat`);
 
     ws.current.onopen = () => {
       console.log("WebSocket connected");
@@ -110,7 +110,6 @@ const ChatDialog = ({
         </Typography>
 
         {isChatStarted ? (
-          // Chế độ chat
           <>
             <Box sx={{ maxHeight: 400, overflowY: "auto", my: 2 }}>
               {messages.map((msg) => (

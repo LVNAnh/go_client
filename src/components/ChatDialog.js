@@ -26,7 +26,8 @@ const ChatDialog = ({
   const ws = useRef(null);
 
   const handleStartChat = async () => {
-    console.log("Guest Name:", guestName, "Guest Phone:", guestPhone);
+    console.log("Guest Name:", guestName);
+    console.log("Guest Phone:", guestPhone);
 
     if (!guestName || !guestPhone) {
       console.error("Guest name and phone are required");

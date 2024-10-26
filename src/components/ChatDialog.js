@@ -22,7 +22,7 @@ const ChatDialog = ({ isOpen, onClose }) => {
   const [isChatStarted, setIsChatStarted] = useState(false);
   const ws = useRef(null);
 
-  const openWebSocket = (chatId, role) => {
+  const openWebSocket = (chatId, role = "Guest") => {
     ws.current = new WebSocket(
       `${API_URL.replace(
         "http",
@@ -31,6 +31,7 @@ const ChatDialog = ({ isOpen, onClose }) => {
     );
 
     ws.current.onopen = () => {
+      console.log("WebSocket connected");
       ws.current.send(JSON.stringify({ type: "join", chatId }));
     };
 
@@ -39,8 +40,12 @@ const ChatDialog = ({ isOpen, onClose }) => {
       setMessages((prev) => [...prev, msg]);
     };
 
-    ws.current.onclose = () => {
-      console.log("WebSocket disconnected");
+    ws.current.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    ws.current.onclose = (event) => {
+      console.log("WebSocket disconnected:", event);
     };
   };
 
@@ -50,7 +55,8 @@ const ChatDialog = ({ isOpen, onClose }) => {
         guest_name: guestName,
         guest_phone: guestPhone,
       });
-      openWebSocket(response.data.id);
+      const chatId = response.data.id;
+      openWebSocket(chatId);
       setIsChatStarted(true);
     } catch (error) {
       console.error("Error starting chat:", error);
@@ -72,7 +78,9 @@ const ChatDialog = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     return () => {
-      if (ws.current) ws.current.close(1000, "Component unmounted");
+      if (ws.current) {
+        ws.current.close(1000, "Component unmounted");
+      }
     };
   }, []);
 

@@ -18,7 +18,7 @@ import Cart from "./components/Cart";
 import ServiceBooking from "./components/ServiceBooking";
 import OrderPage from "./components/OrderPage";
 import OrderBookingServiceManagement from "./components/OrderBookingServiceManagement";
-import ChatWidget from "./components/ChatDialog"; // Update to ChatWidget
+import ChatWidget from "./components/ChatWidget"; // Sử dụng ChatWidget thay cho ChatDialog
 import NotificationList from "./components/NotificationList";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
@@ -97,6 +97,7 @@ function AppContent() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [chatList, setChatList] = useState([]);
   const [openNotificationList, setOpenNotificationList] = useState(false);
+  const [selectedChatId, setSelectedChatId] = useState(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -141,6 +142,11 @@ function AppContent() {
   const handleNotificationClick = () => {
     fetchChatList();
     setOpenNotificationList(true);
+  };
+
+  const handleSelectChat = (chatId) => {
+    setSelectedChatId(chatId);
+    setOpenNotificationList(false);
   };
 
   const updateNotificationCount = async () => {

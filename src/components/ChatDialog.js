@@ -9,6 +9,7 @@ import {
   Fab,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import MinimizeIcon from "@mui/icons-material/Minimize";
 import { Chat } from "@mui/icons-material";
 import axios from "axios";
 
@@ -20,6 +21,7 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
   const [guestName, setGuestName] = useState("");
   const [guestPhone, setGuestPhone] = useState("");
   const [isChatStarted, setIsChatStarted] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false); // State for minimized chat
   const ws = useRef(null);
 
   const openWebSocket = (chatId, role = isAdmin ? "Admin" : "Guest") => {
@@ -80,7 +82,6 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
     }
   };
 
-  // Convert timestamp to GMT+7
   const formatTimestamp = (timestamp) => {
     const date = new Date(timestamp);
     const options = {
@@ -103,118 +104,139 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
     };
   }, []);
 
+  const handleMinimize = () => {
+    setIsMinimized(!isMinimized);
+  };
+
   return (
-    <Box
-      sx={{
-        position: "fixed",
-        bottom: 20,
-        right: 20,
-        width: 350,
-        maxHeight: "70vh",
-        bgcolor: "white",
-        boxShadow: 3,
-        borderRadius: 2,
-        overflow: "hidden",
-        display: isOpen ? "flex" : "none",
-        flexDirection: "column",
-      }}
-    >
+    <>
+      {isMinimized && (
+        <Fab
+          color="primary"
+          aria-label="chat"
+          sx={{ position: "fixed", bottom: 16, right: 16 }}
+          onClick={() => setIsMinimized(false)}
+        >
+          <Chat />
+        </Fab>
+      )}
       <Box
         sx={{
-          bgcolor: "primary.main",
-          p: 1,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          color: "white",
+          position: "fixed",
+          bottom: 20,
+          right: 20,
+          width: 350,
+          maxHeight: isMinimized ? "auto" : "70vh",
+          bgcolor: "white",
+          boxShadow: 3,
+          borderRadius: 2,
+          overflow: "hidden",
+          display: isOpen && !isMinimized ? "flex" : "none",
+          flexDirection: "column",
         }}
       >
-        <Typography variant="h6">
-          {isAdmin ? "Admin Chat Support" : "Chat with Support"}
-        </Typography>
-        <IconButton onClick={onClose} sx={{ color: "white" }}>
-          <CloseIcon />
-        </IconButton>
-      </Box>
-
-      <Box sx={{ p: 2, flex: 1, overflowY: "auto" }}>
-        {isChatStarted ? (
-          messages.map((msg, index) => (
-            <Paper
-              key={index}
-              sx={{
-                p: 1,
-                my: 1,
-                alignSelf:
-                  msg.senderRole === (isAdmin ? "Admin" : guestName)
-                    ? "flex-end"
-                    : "flex-start",
-                bgcolor:
-                  msg.senderRole === (isAdmin ? "Admin" : guestName)
-                    ? "lightblue"
-                    : "lightgrey",
-              }}
-            >
-              <Typography variant="caption" sx={{ fontWeight: "bold" }}>
-                {msg.senderRole}
-              </Typography>
-              <Typography variant="body2">{msg.content}</Typography>
-              <Typography variant="caption" sx={{ fontStyle: "italic" }}>
-                {formatTimestamp(msg.timestamp)}
-              </Typography>
-            </Paper>
-          ))
-        ) : (
+        <Box
+          sx={{
+            bgcolor: "primary.main",
+            p: 1,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            color: "white",
+          }}
+        >
+          <Typography variant="h6">
+            {isAdmin ? "Admin Chat Support" : "Chat with Support"}
+          </Typography>
           <Box>
-            {!isAdmin && (
-              <>
-                <TextField
-                  label="Your Name"
-                  fullWidth
-                  value={guestName}
-                  onChange={(e) => setGuestName(e.target.value)}
-                  sx={{ my: 1 }}
-                />
-                <TextField
-                  label="Your Phone"
-                  fullWidth
-                  value={guestPhone}
-                  onChange={(e) => setGuestPhone(e.target.value)}
-                  sx={{ my: 1 }}
-                />
-              </>
-            )}
+            <IconButton onClick={handleMinimize} sx={{ color: "white" }}>
+              <MinimizeIcon />
+            </IconButton>
+            <IconButton onClick={onClose} sx={{ color: "white" }}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        </Box>
+
+        <Box sx={{ p: 2, flex: 1, overflowY: "auto" }}>
+          {isChatStarted ? (
+            messages.map((msg, index) => (
+              <Paper
+                key={index}
+                sx={{
+                  p: 1,
+                  my: 1,
+                  alignSelf:
+                    msg.senderRole === (isAdmin ? "Admin" : guestName)
+                      ? "flex-end"
+                      : "flex-start",
+                  bgcolor:
+                    msg.senderRole === (isAdmin ? "Admin" : guestName)
+                      ? "lightblue"
+                      : "lightgrey",
+                }}
+              >
+                <Typography variant="caption" sx={{ fontWeight: "bold" }}>
+                  {msg.senderRole}
+                </Typography>
+                <Typography variant="body2">{msg.content}</Typography>
+                <Typography variant="caption" sx={{ fontStyle: "italic" }}>
+                  {formatTimestamp(msg.timestamp)}
+                </Typography>
+              </Paper>
+            ))
+          ) : (
+            <Box>
+              {!isAdmin && (
+                <>
+                  <TextField
+                    label="Your Name"
+                    fullWidth
+                    value={guestName}
+                    onChange={(e) => setGuestName(e.target.value)}
+                    sx={{ my: 1 }}
+                  />
+                  <TextField
+                    label="Your Phone"
+                    fullWidth
+                    value={guestPhone}
+                    onChange={(e) => setGuestPhone(e.target.value)}
+                    sx={{ my: 1 }}
+                  />
+                </>
+              )}
+              <Button
+                onClick={handleStartChat}
+                color="primary"
+                variant="contained"
+                fullWidth
+              >
+                {isAdmin ? "Join Chat" : "Start Chat"}
+              </Button>
+            </Box>
+          )}
+        </Box>
+
+        {isChatStarted && (
+          <Box sx={{ p: 1, display: "flex" }}>
+            <TextField
+              placeholder="Type a message..."
+              fullWidth
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+            />
             <Button
-              onClick={handleStartChat}
+              onClick={handleSendMessage}
               color="primary"
               variant="contained"
-              fullWidth
             >
-              {isAdmin ? "Join Chat" : "Start Chat"}
+              Send
             </Button>
           </Box>
         )}
       </Box>
-
-      {isChatStarted && (
-        <Box sx={{ p: 1, display: "flex" }}>
-          <TextField
-            placeholder="Type a message..."
-            fullWidth
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-          />
-          <Button
-            onClick={handleSendMessage}
-            color="primary"
-            variant="contained"
-          >
-            Send
-          </Button>
-        </Box>
-      )}
-    </Box>
+    </>
   );
 };
 

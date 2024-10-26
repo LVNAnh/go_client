@@ -22,8 +22,13 @@ const ChatDialog = ({ isOpen, onClose }) => {
   const [isChatStarted, setIsChatStarted] = useState(false);
   const ws = useRef(null);
 
-  const openWebSocket = (chatId) => {
-    ws.current = new WebSocket("wss://go-server-9p6w.onrender.com/api/ws/chat");
+  const openWebSocket = (chatId, role) => {
+    ws.current = new WebSocket(
+      `${API_URL.replace(
+        "http",
+        "ws"
+      )}/api/ws/chat?role=${role}&chatId=${chatId}`
+    );
 
     ws.current.onopen = () => {
       ws.current.send(JSON.stringify({ type: "join", chatId }));
@@ -34,15 +39,8 @@ const ChatDialog = ({ isOpen, onClose }) => {
       setMessages((prev) => [...prev, msg]);
     };
 
-    ws.current.onclose = (event) => {
-      console.log("WebSocket disconnected:", event);
-      if (event.code !== 1000) {
-        setTimeout(() => openWebSocket(chatId), 5000);
-      }
-    };
-
-    ws.current.onerror = (error) => {
-      console.error("WebSocket error:", error);
+    ws.current.onclose = () => {
+      console.log("WebSocket disconnected");
     };
   };
 

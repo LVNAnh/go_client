@@ -146,7 +146,7 @@ function AppContent() {
 
   const handleSelectChat = (chatId) => {
     setSelectedChatId(chatId);
-    setOpenNotificationList(false);
+    setOpenChatDialog(true);
   };
 
   const updateNotificationCount = async () => {
@@ -315,12 +315,14 @@ function AppContent() {
         setGuestPhone={setGuestPhone}
         onStartChat={handleStartChat}
         isAdmin={isAdmin}
+        chatId={selectedChatId}
       />
 
       <NotificationList
         open={openNotificationList}
         onClose={() => setOpenNotificationList(false)}
         chatList={chatList}
+        onSelectChat={handleSelectChat}
       />
     </Box>
   );

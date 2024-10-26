@@ -14,7 +14,7 @@ import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-const ChatDialog = ({ isOpen, onClose }) => {
+const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const [guestName, setGuestName] = useState("");
@@ -22,7 +22,7 @@ const ChatDialog = ({ isOpen, onClose }) => {
   const [isChatStarted, setIsChatStarted] = useState(false);
   const ws = useRef(null);
 
-  const openWebSocket = (chatId, role = "Guest") => {
+  const openWebSocket = (chatId, role = isAdmin ? "Admin" : "Guest") => {
     ws.current = new WebSocket(
       `${API_URL.replace(
         "http",
@@ -50,13 +50,18 @@ const ChatDialog = ({ isOpen, onClose }) => {
   };
 
   const handleStartChat = async () => {
+    if (chatId) {
+      openWebSocket(chatId); // Admin joining existing chat
+      setIsChatStarted(true);
+      return;
+    }
     try {
       const response = await axios.post(`${API_URL}/api/create-chat`, {
         guest_name: guestName,
         guest_phone: guestPhone,
       });
-      const chatId = response.data.id;
-      openWebSocket(chatId);
+      const newChatId = response.data.id;
+      openWebSocket(newChatId);
       setIsChatStarted(true);
     } catch (error) {
       console.error("Error starting chat:", error);
@@ -67,7 +72,7 @@ const ChatDialog = ({ isOpen, onClose }) => {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
       const msg = {
         content: message,
-        senderRole: "Guest",
+        senderRole: isAdmin ? "Admin" : "Guest",
         timestamp: new Date(),
       };
       ws.current.send(JSON.stringify(msg));
@@ -110,7 +115,9 @@ const ChatDialog = ({ isOpen, onClose }) => {
           color: "white",
         }}
       >
-        <Typography variant="h6">Chat with Support</Typography>
+        <Typography variant="h6">
+          {isAdmin ? "Admin Chat Support" : "Chat with Support"}
+        </Typography>
         <IconButton onClick={onClose} sx={{ color: "white" }}>
           <CloseIcon />
         </IconButton>
@@ -125,8 +132,13 @@ const ChatDialog = ({ isOpen, onClose }) => {
                 p: 1,
                 my: 1,
                 alignSelf:
-                  msg.senderRole === "Guest" ? "flex-end" : "flex-start",
-                bgcolor: msg.senderRole === "Guest" ? "lightblue" : "lightgrey",
+                  msg.senderRole === (isAdmin ? "Admin" : "Guest")
+                    ? "flex-end"
+                    : "flex-start",
+                bgcolor:
+                  msg.senderRole === (isAdmin ? "Admin" : "Guest")
+                    ? "lightblue"
+                    : "lightgrey",
               }}
             >
               <Typography variant="body2">{msg.content}</Typography>
@@ -134,27 +146,31 @@ const ChatDialog = ({ isOpen, onClose }) => {
           ))
         ) : (
           <Box>
-            <TextField
-              label="Your Name"
-              fullWidth
-              value={guestName}
-              onChange={(e) => setGuestName(e.target.value)}
-              sx={{ my: 1 }}
-            />
-            <TextField
-              label="Your Phone"
-              fullWidth
-              value={guestPhone}
-              onChange={(e) => setGuestPhone(e.target.value)}
-              sx={{ my: 1 }}
-            />
+            {!isAdmin && (
+              <>
+                <TextField
+                  label="Your Name"
+                  fullWidth
+                  value={guestName}
+                  onChange={(e) => setGuestName(e.target.value)}
+                  sx={{ my: 1 }}
+                />
+                <TextField
+                  label="Your Phone"
+                  fullWidth
+                  value={guestPhone}
+                  onChange={(e) => setGuestPhone(e.target.value)}
+                  sx={{ my: 1 }}
+                />
+              </>
+            )}
             <Button
               onClick={handleStartChat}
               color="primary"
               variant="contained"
               fullWidth
             >
-              Start Chat
+              {isAdmin ? "Join Chat" : "Start Chat"}
             </Button>
           </Box>
         )}
@@ -182,12 +198,16 @@ const ChatDialog = ({ isOpen, onClose }) => {
   );
 };
 
-export default function ChatWidget() {
+export default function ChatWidget(props) {
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   return (
     <>
-      <ChatDialog isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+      <ChatDialog
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        {...props}
+      />
       <Fab
         color="primary"
         aria-label="chat"

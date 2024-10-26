@@ -28,7 +28,10 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
 
   const openWebSocket = (chatId, role = isAdmin ? "Admin" : "Guest") => {
     ws.current = new WebSocket(
-      `${API_URL.replace("http", "ws")}/api/chat?role=${role}&chatId=${chatId}`
+      `${API_URL.replace(
+        "http",
+        "ws"
+      )}/api/ws/chat?role=${role}&chatId=${chatId}`
     );
 
     ws.current.onopen = () => {
@@ -53,9 +56,7 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
 
   const fetchChatInfo = async (chatId) => {
     try {
-      const response = await axios.get(`${API_URL}/api/chat/${chatId}/info`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
+      const response = await axios.get(`${API_URL}/api/chat/${chatId}/info`);
       setSenderName(response.data.guest_name || "Guest");
     } catch (error) {
       console.error("Error fetching chat info:", error);
@@ -189,8 +190,7 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
                 }}
               >
                 <Typography variant="caption" sx={{ fontWeight: "bold" }}>
-                  {msg.senderRole}{" "}
-                  {msg.senderRole !== "Admin" && `(${senderName})`}
+                  {msg.senderRole === "Admin" ? "Admin" : senderName}
                 </Typography>
                 <Typography variant="body2">{msg.content}</Typography>
                 <Typography variant="caption" sx={{ fontStyle: "italic" }}>

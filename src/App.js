@@ -18,7 +18,7 @@ import Cart from "./components/Cart";
 import ServiceBooking from "./components/ServiceBooking";
 import OrderPage from "./components/OrderPage";
 import OrderBookingServiceManagement from "./components/OrderBookingServiceManagement";
-import ChatWidget from "./components/ChatWidget"; // Sử dụng ChatWidget thay cho ChatDialog
+import ChatWidget from "./components/ChatDialog";
 import NotificationList from "./components/NotificationList";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {

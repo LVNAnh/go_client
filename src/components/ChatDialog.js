@@ -55,11 +55,8 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
 
   const fetchChatInfo = async (chatId) => {
     try {
-      const response = await axios.get(`${API_URL}/api/admin/chats`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
-      const chat = response.data.find((chat) => chat.id === chatId);
-      setSenderName(chat ? chat.guest_name : "Guest");
+      const response = await axios.get(`${API_URL}/api/chat/${chatId}/info`);
+      setSenderName(response.data.guest_name || "Guest");
     } catch (error) {
       console.error("Error fetching chat info:", error);
     }

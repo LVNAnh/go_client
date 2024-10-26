@@ -23,14 +23,12 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
   const [isChatStarted, setIsChatStarted] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [senderName, setSenderName] = useState("");
+  const userRole = isAdmin ? "Admin" : guestName;
   const ws = useRef(null);
 
   const openWebSocket = (chatId, role = isAdmin ? "Admin" : "Guest") => {
     ws.current = new WebSocket(
-      `${API_URL.replace(
-        "http",
-        "ws"
-      )}/api/ws/chat?role=${role}&chatId=${chatId}`
+      `${API_URL.replace("http", "ws")}/api/chat?role=${role}&chatId=${chatId}`
     );
 
     ws.current.onopen = () => {
@@ -55,7 +53,9 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
 
   const fetchChatInfo = async (chatId) => {
     try {
-      const response = await axios.get(`${API_URL}/api/chat/${chatId}/info`);
+      const response = await axios.get(`${API_URL}/api/chat/${chatId}/info`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setSenderName(response.data.guest_name || "Guest");
     } catch (error) {
       console.error("Error fetching chat info:", error);
@@ -85,7 +85,7 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
       const msg = {
         content: message,
-        senderRole: isAdmin ? "Admin" : guestName,
+        senderRole: userRole,
         timestamp: new Date().toISOString(),
       };
       ws.current.send(JSON.stringify(msg));
@@ -181,14 +181,11 @@ const ChatDialog = ({ isOpen, onClose, isAdmin, chatId }) => {
                 sx={{
                   p: 1,
                   my: 1,
+                  maxWidth: "80%",
                   alignSelf:
-                    msg.senderRole === (isAdmin ? "Admin" : guestName)
-                      ? "flex-end"
-                      : "flex-start",
+                    msg.senderRole === userRole ? "flex-end" : "flex-start",
                   bgcolor:
-                    msg.senderRole === (isAdmin ? "Admin" : guestName)
-                      ? "lightblue"
-                      : "lightgrey",
+                    msg.senderRole === userRole ? "lightblue" : "lightgrey",
                 }}
               >
                 <Typography variant="caption" sx={{ fontWeight: "bold" }}>

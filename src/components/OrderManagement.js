@@ -49,8 +49,10 @@ function OrderManagement() {
           {orders.map((order, index) => (
             <TableRow key={order.id}>
               <TableCell>{index + 1}</TableCell>
-              <TableCell>{order.contactName}</TableCell>
-              <TableCell>{order.contactPhone}</TableCell>
+              <TableCell>
+                {order.user?.firstName} {order.user?.lastName}
+              </TableCell>
+              <TableCell>{order.user?.phone}</TableCell>
               <TableCell>
                 {order.items.map((item) => item.name).join(", ")}
               </TableCell>
@@ -61,7 +63,7 @@ function OrderManagement() {
               <TableCell>
                 {new Date(order.createdAt).toLocaleDateString()}
               </TableCell>
-              <TableCell>{order.address}</TableCell>
+              <TableCell>{order.user?.address}</TableCell>
               <TableCell>{order.status}</TableCell>
             </TableRow>
           ))}

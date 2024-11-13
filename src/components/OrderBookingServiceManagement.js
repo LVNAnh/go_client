@@ -68,7 +68,7 @@ function OrderBookingServiceManagement() {
     return service ? service.name : "Không xác định";
   };
 
-  const handleStatusChange = (order, status) => {
+  const handleStatusChange = (id, order, status) => {
     if (order.status === "completed" || order.status === "cancelled") {
       setSnackbarMessage(
         "Không thể cập nhật đơn hàng ĐÃ HOÀN THÀNH hoặc ĐÃ BỊ HỦY"
@@ -85,7 +85,7 @@ function OrderBookingServiceManagement() {
     try {
       const token = localStorage.getItem("token");
       await axios.patch(
-        `${API_URL}/api/orderbookingservice/${selectedOrder.id}/status`,
+        `${API_URL}/api/orderbookingservice/${selectedOrder.id}/status`, // sửa lại thành selectedOrder.id nếu vẫn cần selectedOrder hoặc truyền thẳng id nếu chỉ dùng id
         { status: newStatus },
         {
           headers: { Authorization: `Bearer ${token}` },

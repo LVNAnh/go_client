@@ -18,6 +18,7 @@ import Cart from "./components/Cart";
 import ServiceBooking from "./components/ServiceBooking";
 import OrderPage from "./components/OrderPage";
 import OrderBookingServiceManagement from "./components/OrderBookingServiceManagement";
+import OrderManagement from "./components/OrderManagement";
 import ChatWidget from "./components/ChatDialog";
 import NotificationList from "./components/NotificationList";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -79,6 +80,9 @@ function AdminMenu() {
         </MenuItem>
         <MenuItem component={Link} to="/order-booking-service-history">
           Quản lý lịch sử đơn hàng dịch vụ
+        </MenuItem>
+        <MenuItem component={Link} to="/order-management">
+          Quản lý đơn hàng
         </MenuItem>
       </Menu>
     </div>
@@ -290,6 +294,7 @@ function AppContent() {
                 path="/order-booking-service-history"
                 element={<OrderBookingServiceManagement />}
               />
+              <Route path="/order-management" element={<OrderManagement />} />
             </>
           )}
 

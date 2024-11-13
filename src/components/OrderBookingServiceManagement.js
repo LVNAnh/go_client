@@ -31,6 +31,7 @@ function OrderBookingServiceManagement() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [newStatus, setNewStatus] = useState("");
+  const [confirmMessage, setConfirmMessage] = useState("");
 
   useEffect(() => {
     fetchServices();
@@ -77,6 +78,13 @@ function OrderBookingServiceManagement() {
     } else {
       setSelectedOrder(order);
       setNewStatus(status);
+      if (status === "completed") {
+        setConfirmMessage("Xác nhận HOÀN THÀNH đơn hàng");
+      } else if (status === "cancelled") {
+        setConfirmMessage("Xác nhận HỦY đơn hàng này");
+      } else {
+        setConfirmMessage("Bạn có muốn cập nhật đơn hàng này không?");
+      }
       setDialogOpen(true);
     }
   };
@@ -145,6 +153,10 @@ function OrderBookingServiceManagement() {
                   <Select
                     value={order.status}
                     onChange={(e) => handleStatusChange(order, e.target.value)}
+                    disabled={
+                      order.status === "completed" ||
+                      order.status === "cancelled"
+                    }
                   >
                     <MenuItem value="pending">Pending</MenuItem>
                     <MenuItem value="confirmed">Confirmed</MenuItem>
@@ -160,13 +172,7 @@ function OrderBookingServiceManagement() {
       </TableContainer>
 
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-        <DialogTitle>
-          {newStatus === "completed"
-            ? "Xác nhận HOÀN THÀNH đơn hàng này"
-            : newStatus === "cancelled"
-            ? "Xác nhận HỦY đơn hàng này"
-            : "Bạn có muốn cập nhật đơn hàng này không?"}
-        </DialogTitle>
+        <DialogTitle>{confirmMessage}</DialogTitle>
         <DialogActions>
           <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
           <Button onClick={confirmStatusUpdate} color="primary">

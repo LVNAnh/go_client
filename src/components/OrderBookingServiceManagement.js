@@ -12,6 +12,12 @@ import {
   Paper,
   Select,
   MenuItem,
+  Snackbar,
+  Alert,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  Button,
 } from "@mui/material";
 
 const API_URL = process.env.REACT_APP_API_URL;
@@ -20,6 +26,12 @@ function OrderBookingServiceManagement() {
   const [orders, setOrders] = useState([]);
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [newStatus, setNewStatus] = useState("");
+  const [confirmMessage, setConfirmMessage] = useState("");
 
   useEffect(() => {
     fetchServices();
@@ -57,19 +69,45 @@ function OrderBookingServiceManagement() {
     return service ? service.name : "Không xác định";
   };
 
-  const handleStatusChange = async (id, newStatus) => {
+  const handleStatusChange = (order, status) => {
+    if (order.status === "completed" || order.status === "cancelled") {
+      setSnackbarMessage(
+        "Không thể cập nhật đơn hàng ĐÃ HOÀN THÀNH hoặc ĐÃ BỊ HỦY"
+      );
+      setSnackbarOpen(true);
+    } else {
+      setSelectedOrder(order);
+      setNewStatus(status);
+      if (status === "completed") {
+        setConfirmMessage("Xác nhận HOÀN THÀNH đơn hàng");
+      } else if (status === "cancelled") {
+        setConfirmMessage("Xác nhận HỦY đơn hàng này");
+      } else {
+        setConfirmMessage("Bạn có muốn cập nhật đơn hàng này không?");
+      }
+      setDialogOpen(true);
+    }
+  };
+
+  const confirmStatusUpdate = async () => {
     try {
       const token = localStorage.getItem("token");
       await axios.patch(
-        `${API_URL}/api/orderbookingservice/${id}/status`,
+        `${API_URL}/api/orderbookingservice/${selectedOrder.id}/status`,
         { status: newStatus },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+      setSnackbarMessage("Cập nhật trạng thái đơn hàng thành công");
+      setSnackbarOpen(true);
       fetchOrderBookings();
     } catch (error) {
       console.error("Error updating status:", error);
+      setSnackbarMessage("Cập nhật trạng thái đơn hàng thất bại");
+      setSnackbarOpen(true);
+    } finally {
+      setDialogOpen(false);
     }
   };
 
@@ -114,15 +152,17 @@ function OrderBookingServiceManagement() {
                 <TableCell>
                   <Select
                     value={order.status}
-                    onChange={(e) =>
-                      handleStatusChange(order.id, e.target.value)
+                    onChange={(e) => handleStatusChange(order, e.target.value)}
+                    disabled={
+                      order.status === "completed" ||
+                      order.status === "cancelled"
                     }
                   >
-                    <MenuItem value="Chờ xác nhận">Chờ xác nhận</MenuItem>
-                    <MenuItem value="Đã xác nhận">Đã xác nhận</MenuItem>
-                    <MenuItem value="Đang tiến hành">Đang tiến hành</MenuItem>
-                    <MenuItem value="Hoàn thành">Hoàn thành</MenuItem>
-                    <MenuItem value="Đã hủy">Đã hủy</MenuItem>
+                    <MenuItem value="pending">Pending</MenuItem>
+                    <MenuItem value="confirmed">Confirmed</MenuItem>
+                    <MenuItem value="in-progress">In Progress</MenuItem>
+                    <MenuItem value="completed">Completed</MenuItem>
+                    <MenuItem value="cancelled">Cancelled</MenuItem>
                   </Select>
                 </TableCell>
               </TableRow>
@@ -130,6 +170,30 @@ function OrderBookingServiceManagement() {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+        <DialogTitle>{confirmMessage}</DialogTitle>
+        <DialogActions>
+          <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
+          <Button onClick={confirmStatusUpdate} color="primary">
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity="info"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

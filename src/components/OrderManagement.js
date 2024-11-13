@@ -20,7 +20,7 @@ function OrderManagement() {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get(`${API_URL}/api/admin/orders`, {
+      const response = await axios.get(`${API_URL}/api/order-management`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setOrders(response.data);

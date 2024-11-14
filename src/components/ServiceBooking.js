@@ -263,7 +263,11 @@ function ServiceBooking() {
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: "center", horizontal: "center" }}
       >
-        <Alert onClose={handleCloseSnackbar} severity="info">
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity="warning"
+          sx={{ width: "100%" }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>

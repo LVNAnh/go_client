@@ -62,8 +62,14 @@ function ServiceBooking() {
   };
 
   const handleBooking = (service) => {
-    setSelectedService(service);
-    setOpenFormDialog(true);
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setSnackbarMessage("Vui lòng đăng nhập để đặt dịch vụ.");
+      setOpenSnackbar(true);
+      return;
+    }
+    setSnackbarMessage(`Dịch vụ "${service.name}" đã được đặt.`);
+    setOpenSnackbar(true);
   };
 
   const handleCloseSnackbar = () => {

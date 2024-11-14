@@ -261,9 +261,9 @@ function ServiceBooking() {
         open={openSnackbar}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        anchorOrigin={{ vertical: "center", horizontal: "center" }}
       >
-        <Alert onClose={handleCloseSnackbar} severity="success">
+        <Alert onClose={handleCloseSnackbar} severity="info">
           {snackbarMessage}
         </Alert>
       </Snackbar>

@@ -62,14 +62,8 @@ function ServiceBooking() {
   };
 
   const handleBooking = (service) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setSnackbarMessage("Vui lòng đăng nhập để đặt dịch vụ.");
-      setOpenSnackbar(true);
-      return;
-    }
-    setSnackbarMessage(`Dịch vụ "${service.name}" đã được đặt.`);
-    setOpenSnackbar(true);
+    setSelectedService(service);
+    setOpenFormDialog(true);
   };
 
   const handleCloseSnackbar = () => {
@@ -261,13 +255,9 @@ function ServiceBooking() {
         open={openSnackbar}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "center", horizontal: "center" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity="warning"
-          sx={{ width: "100%" }}
-        >
+        <Alert onClose={handleCloseSnackbar} severity="success">
           {snackbarMessage}
         </Alert>
       </Snackbar>
